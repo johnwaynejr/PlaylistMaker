@@ -16,18 +16,18 @@
         android:id="@+id/btn_find_am"
         style="@style/ButtonStyle"
         android:text="@string/btn_find_text"
-        app:icon="@drawable/ic_fnd"
+        app:icon="@drawable/find"
         />
     <Button
         android:id="@+id/btn_media_am"
         style="@style/ButtonStyle"
         android:text="@string/btn_media_text"
-        app:icon="@drawable/ic_mediateka"
+        app:icon="@drawable/media"
         />
     <Button
         android:id="@+id/btn_settings_am"
         style="@style/ButtonStyle"
         android:text="@string/btn_settings_text"
-        app:icon="@drawable/ic_sttngs"
+        app:icon="@drawable/settings"
         />
 </LinearLayout>

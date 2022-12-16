@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mm_btn_height">0dp</dimen>
+    <dimen name="mm_btn_margin_bottom">10dp</dimen>
+    <dimen name="mm_btn_icon_padding">10dp</dimen>
+    <dimen name="mm_btn_corner_radius">20dp</dimen>
+    <dimen name="twenty_four">24dp</dimen>
+    <dimen name="mm_btn_font_size">24sp</dimen>
+    <dimen name="as_arrow_back_size">24dp</dimen>
+    <dimen name="as_margin">20dp</dimen>
+    <dimen name="as_margin_top">42dp</dimen>
+    <dimen name="as_margin_top_big">61dp</dimen>
+    <dimen name="as_text_size">16sp</dimen>
+    <dimen name="tl_text_size">11sp</dimen>
+    <dimen name="edit_text_min_height">48dp</dimen>
+    <dimen name="header_bottom_padding">40dp</dimen>
+    <dimen name="tl_image_view_size">36dp</dimen>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="@dimen/as_margin">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/find_activity_arrow_back"
+            android:layout_width="@dimen/as_arrow_back_size"
+            android:layout_height="@dimen/as_arrow_back_size"
+            app:srcCompat="@drawable/arrowback"
+            app:tint="?attr/colorOnSecondary" />
+        <TextView
+            android:id="@+id/settings_header"
+            style="@style/TitleTextStyle"
+            android:text="@string/btn_find_text" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/as_margin">
+
+        <EditText
+            android:id="@+id/et_find"
+            style="@style/edit_text_find"
+            android:hint="@string/btn_find_text"
+            android:drawableStart="@drawable/find"
+            android:drawablePadding="@dimen/mm_btn_icon_padding"
+            android:background="@drawable/edit_text_bg"/>
+        <Button
+            android:id="@+id/btn_clear"
+            style="@style/ButtonStyleTransparent"
+            android:text="@string/btn_clear" />
+    </FrameLayout>
+
+
+    <Button
+        android:id="@+id/searchBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Поиск" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/twenty_four"
+        tools:listitem="@layout/track_list_layout"/>
+
+    <TextView android:id="@+id/placeholderMessage"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+</LinearLayout>
