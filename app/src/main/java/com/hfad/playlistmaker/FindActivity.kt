@@ -44,7 +44,7 @@ class FindActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val iTunesService = retrofit.create(iTunesAPI::class.java)
+    private val iTunesService = retrofit.create(iTunesApi::class.java)
 
     private val tracks = ArrayList<Track>()
     private lateinit var searchButton: Button

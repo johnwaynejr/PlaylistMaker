@@ -71,7 +71,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_view_share_app"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_view_share_app"
-        app:srcCompat="@drawable/ic_share" />
+        app:srcCompat="@drawable/share" />
 
     <ImageView
         android:id="@+id/iv_support"
@@ -79,7 +79,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_view_write_to_support"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_view_write_to_support"
-        app:srcCompat="@drawable/ic_support" />
+        app:srcCompat="@drawable/support" />
 
     <ImageView
         android:id="@+id/iv_user_agreement"
@@ -87,6 +87,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_view_user_note"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_view_user_note"
-        app:srcCompat="@drawable/ic_arrow_fwd" />
+        app:srcCompat="@drawable/arrowfwd" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

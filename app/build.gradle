@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.hfad.playlistmaker'
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.hfad.playlistmaker"
         minSdk 23
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
