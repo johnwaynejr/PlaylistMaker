@@ -61,6 +61,9 @@ class FindActivity : AppCompatActivity() {
         val inputEditText = findViewById<EditText>(R.id.et_find)
         val clearButton = findViewById<Button>(R.id.btn_clear)
         placeholderMessage = findViewById(R.id.placeholderMessage)
+        searchButton = findViewById(R.id.searchBtn)
+        queryInput = findViewById(R.id.et_find)
+        trackList = findViewById(R.id.recyclerView)
         clearButton.visibility = View.INVISIBLE
 
         clearButton.setOnClickListener {
@@ -95,13 +98,13 @@ class FindActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+        adapter.trackList=tracks
         // RECYCLE VIEW -------------------------------------------------------------------------
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         trackList.adapter = adapter
 
         //recyclerView.adapter = CustomRecyclerAdapter(tracks)
-        searchButton = findViewById(R.id.searchBtn)
-        queryInput = findViewById(R.id.et_find)
+
 
         searchButton.setOnClickListener {
             if (queryInput.text.isNotEmpty()) {

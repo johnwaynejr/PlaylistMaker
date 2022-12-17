@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
-class CustomRecyclerAdapter(private val trackList: ArrayList<Track>) : RecyclerView
+class CustomRecyclerAdapter(var trackList: ArrayList<Track>) : RecyclerView
 .Adapter<CustomRecyclerAdapter.MyViewHolder>() {
 
 
