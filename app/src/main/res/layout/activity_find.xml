@@ -52,17 +52,21 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingTop="@dimen/twenty_four"
         tools:listitem="@layout/track_list_layout"/>
 
-    <TextView android:id="@+id/placeholderMessage"
-        android:layout_width="300dp"
+
+    <TextView
+        android:id="@+id/placeholderMessage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:fontFamily="@font/ys_display_medium"
+        android:text="@string/no_internet"
         android:textAlignment="center"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/tl_text_size"
+        android:textStyle="bold" />
 
 </LinearLayout>

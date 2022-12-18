@@ -127,7 +127,7 @@ class FindActivity : AppCompatActivity() {
                             }
                         } else {
                             showMessage(
-                                getString(R.string.something_went_wrong),
+                                getString(R.string.no_internet),
                                 response.code().toString()
                             )
                         }
