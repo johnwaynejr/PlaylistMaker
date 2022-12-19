@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="@dimen/as_margin">
@@ -56,17 +56,23 @@
         android:paddingTop="@dimen/twenty_four"
         tools:listitem="@layout/track_list_layout"/>
 
-
+    <ImageView
+        android:id="@+id/statusImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="112dp"
+        android:visibility="gone" />
     <TextView
         android:id="@+id/placeholderMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="@font/ys_display_medium"
-        android:text="@string/no_internet"
         android:textAlignment="center"
         android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/tl_text_size"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +52,8 @@ class FindActivity : AppCompatActivity() {
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
     private lateinit var trackList: RecyclerView
+    private lateinit var imageQueryStatus: ImageView
+
 
     private val adapter = CustomRecyclerAdapter(tracks)
 
@@ -60,6 +63,7 @@ class FindActivity : AppCompatActivity() {
 
         val inputEditText = findViewById<EditText>(R.id.et_find)
         val clearButton = findViewById<Button>(R.id.btn_clear)
+        imageQueryStatus = findViewById<ImageView>(R.id.statusImage)
         placeholderMessage = findViewById(R.id.placeholderMessage)
         searchButton = findViewById(R.id.searchBtn)
         queryInput = findViewById(R.id.et_find)
@@ -105,8 +109,9 @@ class FindActivity : AppCompatActivity() {
 
         //recyclerView.adapter = CustomRecyclerAdapter(tracks)
 
-
         searchButton.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(searchButton.windowToken, 0)
             if (queryInput.text.isNotEmpty()) {
                 iTunesService.search(queryInput.text.toString()).enqueue(object :
                     Callback<SongResponse> {
@@ -121,15 +126,13 @@ class FindActivity : AppCompatActivity() {
                                 trackList.adapter!!.notifyDataSetChanged()
                             }
                             if (tracks.isEmpty()) {
-                                showMessage(getString(R.string.nothing_found), "")
+                                showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
                             } else {
-                                showMessage("", "")
+                                //showMessage("", "")
                             }
                         } else {
-                            showMessage(
-                                getString(R.string.no_internet),
-                                response.code().toString()
-                            )
+                            //showMessage(getString(R.string.no_internet),response.code().toString())
+                            showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
                         }
                     }
 
@@ -141,9 +144,17 @@ class FindActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun showQueryPlaceholder(image: Int, message: Int) {
+        tracks.clear()
+        imageQueryStatus.visibility = View.VISIBLE
+        imageQueryStatus.setImageResource(image)
+        placeholderMessage.visibility = View.VISIBLE
+        placeholderMessage.setText(message)
+    }
+
     private fun showMessage(text: String, additionalMessage: String) {
         if (text.isNotEmpty()) {
-            placeholderMessage.visibility = View.VISIBLE
             tracks.clear()
             adapter.notifyDataSetChanged()
             placeholderMessage.text = text
@@ -155,6 +166,7 @@ class FindActivity : AppCompatActivity() {
             placeholderMessage.visibility = View.GONE
         }
     }
+
 }
 
 
