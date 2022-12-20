@@ -18,7 +18,7 @@
     <string name="offer">https://yandex.ru/legal/practicum_offer/</string>
     <string name="btn_clear">X</string>
     <string name="nothing_found">Ничего не нашлось</string>
-    <string name="something_went_wrong">Проблема со связью</string>
+    <string name="something_went_wrong">Что-то пошло не так.Ошибка сервера...</string>
     <string name="title_activity_settings">activity_settings</string>
     <string name="no_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
 

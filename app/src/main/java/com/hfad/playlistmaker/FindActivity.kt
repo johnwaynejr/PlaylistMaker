@@ -105,11 +105,12 @@ class FindActivity : AppCompatActivity() {
         adapter.trackList=tracks
         // RECYCLE VIEW -------------------------------------------------------------------------
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        trackList.adapter = adapter
+
 
         //recyclerView.adapter = CustomRecyclerAdapter(tracks)
 
         searchButton.setOnClickListener {
+            trackList.adapter = adapter
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(searchButton.windowToken, 0)
             if (queryInput.text.isNotEmpty()) {
@@ -131,13 +132,12 @@ class FindActivity : AppCompatActivity() {
                                 //showMessage("", "")
                             }
                         } else {
-                            //showMessage(getString(R.string.no_internet),response.code().toString())
-                            showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
+                               showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
                         }
                     }
 
                     override fun onFailure(call: Call<SongResponse>, t: Throwable) {
-                        showMessage(getString(R.string.something_went_wrong), t.message.toString())
+                        showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
                     }
 
                 })
