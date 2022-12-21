@@ -35,19 +35,15 @@
             android:hint="@string/btn_find_text"
             android:drawableStart="@drawable/find"
             android:drawablePadding="@dimen/mm_btn_icon_padding"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:background="@drawable/edit_text_bg"/>
+
         <Button
             android:id="@+id/btn_clear"
             style="@style/ButtonStyleTransparent"
             android:text="@string/btn_clear" />
     </FrameLayout>
-
-
-    <Button
-        android:id="@+id/searchBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Поиск" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

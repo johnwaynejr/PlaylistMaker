@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -37,7 +38,7 @@ class FindActivity : AppCompatActivity() {
         val strValET=savedInstanceState.getString(ET_VALUE)
         inputEditText.setText(strValET)
     }
-    //-----------------------------------------
+
     private val itunesBaseUrl = "https://itunes.apple.com"
 
     private val retrofit = Retrofit.Builder()
@@ -61,20 +62,23 @@ class FindActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find)
 
+        val btnBack = findViewById<ImageView>(R.id.find_activity_arrow_back)
         val inputEditText = findViewById<EditText>(R.id.et_find)
         val clearButton = findViewById<Button>(R.id.btn_clear)
-        imageQueryStatus = findViewById<ImageView>(R.id.statusImage)
+        imageQueryStatus = findViewById(R.id.statusImage)
         placeholderMessage = findViewById(R.id.placeholderMessage)
         searchButton = findViewById(R.id.searchBtn)
         queryInput = findViewById(R.id.et_find)
         trackList = findViewById(R.id.recyclerView)
-        clearButton.visibility = View.INVISIBLE
 
+    // Скрываем кнопку очистки поля ввода в строке поиска
+        clearButton.visibility = View.INVISIBLE
+    // Обрабатываем нажатие на кнопку
         clearButton.setOnClickListener {
             inputEditText.text.clear()
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(clearButton.windowToken, 0)
+            hideKeyboard()
         }
+    // Инициализация TextWatcher
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -93,58 +97,57 @@ class FindActivity : AppCompatActivity() {
             }
         }
 
-        //добавляем созданный simpleTextWatcher к EditText
+    //Добавляем созданный simpleTextWatcher к EditText
         inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        //Обработка нажатия на кнопку "Назад"
-        val btnBack = findViewById<ImageView>(R.id.find_activity_arrow_back)
+    //Обрабатываем нажатие на кнопку "Назад"
         btnBack.setOnClickListener {
             onBackPressed()
         }
 
         adapter.trackList=tracks
-        // RECYCLE VIEW -------------------------------------------------------------------------
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-
-        //recyclerView.adapter = CustomRecyclerAdapter(tracks)
-
-        searchButton.setOnClickListener {
-            trackList.adapter = adapter
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(searchButton.windowToken, 0)
-            if (queryInput.text.isNotEmpty()) {
-                iTunesService.search(queryInput.text.toString()).enqueue(object :
-                    Callback<SongResponse> {
-                    override fun onResponse(
-                        call: Call<SongResponse>,
-                        response: Response<SongResponse>
-                    ) {
-                        if (response.code() == 200) {
-                            tracks.clear()
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                tracks.addAll(response.body()?.results!!)
-                                trackList.adapter!!.notifyDataSetChanged()
-                            }
-                            if (tracks.isEmpty()) {
-                                showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
+    //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА-------------------------------------------------------------
+        queryInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                trackList.adapter = adapter
+                hideKeyboard()
+                if (queryInput.text.isNotEmpty()) {
+                    iTunesService.search(queryInput.text.toString()).enqueue(object :
+                        Callback<SongResponse> {
+                        override fun onResponse(
+                            call: Call<SongResponse>,
+                            response: Response<SongResponse>
+                        ) {
+                            if (response.code() == 200) {
+                                tracks.clear()
+                                if (response.body()?.results?.isNotEmpty() == true) {
+                                    tracks.addAll(response.body()?.results!!)
+                                    trackList.adapter!!.notifyDataSetChanged()
+                                }
+                                if (tracks.isEmpty()) {
+                                    showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
+                                } else {
+                                    //showMessage("", "")
+                                }
                             } else {
-                                //showMessage("", "")
+                                showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
                             }
-                        } else {
-                               showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
                         }
-                    }
 
-                    override fun onFailure(call: Call<SongResponse>, t: Throwable) {
-                        showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
-                    }
+                        override fun onFailure(call: Call<SongResponse>, t: Throwable) {
+                            showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
+                        }
 
-                })
+                    })
+                }
+                true
             }
+            false
         }
     }
-
+// Функция отображения заглушки при неудачном поиске
     private fun showQueryPlaceholder(image: Int, message: Int) {
         tracks.clear()
         imageQueryStatus.visibility = View.VISIBLE
@@ -152,8 +155,16 @@ class FindActivity : AppCompatActivity() {
         placeholderMessage.visibility = View.VISIBLE
         placeholderMessage.setText(message)
     }
+// Функция скрытия клавиатуры
+    private fun hideKeyboard() {
+        this.currentFocus?.let { view ->
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
 
-    private fun showMessage(text: String, additionalMessage: String) {
+    /*private fun showMessage(text: String, additionalMessage: String) {
         if (text.isNotEmpty()) {
             tracks.clear()
             adapter.notifyDataSetChanged()
@@ -165,7 +176,7 @@ class FindActivity : AppCompatActivity() {
         } else {
             placeholderMessage.visibility = View.GONE
         }
-    }
+    }*/
 
 }
 
