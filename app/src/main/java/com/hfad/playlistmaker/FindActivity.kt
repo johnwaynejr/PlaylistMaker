@@ -67,7 +67,6 @@ class FindActivity : AppCompatActivity() {
         val clearButton = findViewById<Button>(R.id.btn_clear)
         imageQueryStatus = findViewById(R.id.statusImage)
         placeholderMessage = findViewById(R.id.placeholderMessage)
-        searchButton = findViewById(R.id.searchBtn)
         queryInput = findViewById(R.id.et_find)
         trackList = findViewById(R.id.recyclerView)
 
