@@ -72,9 +72,10 @@ class FindActivity : AppCompatActivity() {
 
     // Скрываем кнопку очистки поля ввода в строке поиска
         clearButton.visibility = View.INVISIBLE
-    // Обрабатываем нажатие на кнопку
+    // Обрабатываем нажатие на кнопку очистки поля ввода
         clearButton.setOnClickListener {
             inputEditText.text.clear()
+            trackList.visibility = View.GONE
             hideKeyboard()
         }
     // Инициализация TextWatcher
@@ -111,6 +112,7 @@ class FindActivity : AppCompatActivity() {
         queryInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 trackList.adapter = adapter
+                trackList.visibility = View.VISIBLE
                 hideKeyboard()
                 if (queryInput.text.isNotEmpty()) {
                     iTunesService.search(queryInput.text.toString()).enqueue(object :
@@ -126,22 +128,26 @@ class FindActivity : AppCompatActivity() {
                                     trackList.adapter!!.notifyDataSetChanged()
                                 }
                                 if (tracks.isEmpty()) {
+                                    trackList.visibility = View.GONE
                                     showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
                                 } else {
                                     //showMessage("", "")
                                 }
                             } else {
+                                trackList.visibility = View.GONE
                                 showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
                             }
                         }
 
                         override fun onFailure(call: Call<SongResponse>, t: Throwable) {
+                            trackList.visibility = View.GONE
                             showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
                         }
 
                     })
                 }
                 true
+
             }
             false
         }

@@ -9,6 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CustomRecyclerAdapter(var trackList: ArrayList<Track>) : RecyclerView
 .Adapter<CustomRecyclerAdapter.MyViewHolder>() {
@@ -22,7 +25,10 @@ class CustomRecyclerAdapter(var trackList: ArrayList<Track>) : RecyclerView
 
         fun bind(track: Track) {
             trackTextView.text = track.trackName
-            this.artistTextView.text = "${track.artistName} · ${track.trackTime}"
+            val durationTrack =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+            val artistNamePlusDuration = track.artistName.plus(" · ").plus(durationTrack)
+            this.artistTextView.text = artistNamePlusDuration
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
