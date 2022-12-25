@@ -25,8 +25,7 @@ class CustomRecyclerAdapter(var trackList: ArrayList<Track>) : RecyclerView
 
         fun bind(track: Track) {
             trackTextView.text = track.trackName
-            val durationTrack =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+            val durationTrack = formatTrackDuration(track.trackTimeMillis)
             val artistNamePlusDuration = track.artistName.plus(" · ").plus(durationTrack)
             this.artistTextView.text = artistNamePlusDuration
 
@@ -36,6 +35,13 @@ class CustomRecyclerAdapter(var trackList: ArrayList<Track>) : RecyclerView
                 .fitCenter()
                 .transform(RoundedCorners(10))
                 .into(image)
+        }
+        private fun formatTrackDuration(timeTrack: String?): String {
+            if (timeTrack != null) {
+                return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeTrack.toInt())
+            }
+
+            return itemView.context.getString(R.string.no_track_time)
         }
 
     }
