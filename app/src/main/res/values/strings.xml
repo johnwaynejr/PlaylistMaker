@@ -37,4 +37,5 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="no_track_time">нет данных</string>
+    <string name="btn_update">Обновить</string>
 </resources>

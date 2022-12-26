@@ -70,5 +70,9 @@
         android:textSize="@dimen/tl_text_size"
         android:textStyle="bold"
         android:visibility="gone"/>
+    <Button
+        android:id="@+id/btnUpdate"
+        style="@style/SearchRefreshButton"
+        android:text="@string/btn_update" />
 
 </LinearLayout>
