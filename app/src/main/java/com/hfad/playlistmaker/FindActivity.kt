@@ -49,7 +49,7 @@ class FindActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(iTunesApi::class.java)
 
     private val tracks = ArrayList<Track>()
-    private lateinit var searchButton: Button
+    private lateinit var updButton: Button
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
     private lateinit var trackList: RecyclerView
@@ -69,13 +69,18 @@ class FindActivity : AppCompatActivity() {
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.et_find)
         trackList = findViewById(R.id.recyclerView)
+        updButton =findViewById(R.id.btnUpdate)
 
-    // Скрываем кнопку очистки поля ввода в строке поиска
-        clearButton.visibility = View.INVISIBLE
+    // Скрываем кнопки
+        clearButton.visibility = View.GONE
+        updButton.visibility = View.GONE
     // Обрабатываем нажатие на кнопку очистки поля ввода
         clearButton.setOnClickListener {
             inputEditText.text.clear()
             trackList.visibility = View.GONE
+            placeholderMessage.visibility=View.GONE
+            imageQueryStatus.visibility=View.GONE
+            updButton.visibility=View.GONE
             hideKeyboard()
         }
     // Инициализация TextWatcher
@@ -108,7 +113,7 @@ class FindActivity : AppCompatActivity() {
         adapter.trackList=tracks
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-    //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА-------------------------------------------------------------
+    //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА--------------------------------------------------
         queryInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 trackList.adapter = adapter
@@ -135,12 +140,14 @@ class FindActivity : AppCompatActivity() {
                                 }
                             } else {
                                 trackList.visibility = View.GONE
+                                updButton.visibility=View.VISIBLE
                                 showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
                             }
                         }
 
                         override fun onFailure(call: Call<SongResponse>, t: Throwable) {
                             trackList.visibility = View.GONE
+                            updButton.visibility=View.VISIBLE
                             showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
                         }
 
