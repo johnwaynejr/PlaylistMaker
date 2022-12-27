@@ -11,5 +11,5 @@
     <color name="gray_element">#AEAFB4</color>
     <color name="gray_light">#E6E8EB</color>
 
-    <color name="tint_if_theme">#FF000000</color>
+    <color name="tint_if_theme">#FFFFFFFF</color>
 </resources>

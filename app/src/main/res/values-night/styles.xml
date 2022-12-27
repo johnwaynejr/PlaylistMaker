@@ -86,6 +86,7 @@
         <item name="android:inputType">text</item>
         <item name="android:lines">1</item>
         <item name="android:maxLines">15</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:drawableTint">@color/black</item>
         <item name="android:textColorHint">@color/black</item>
@@ -112,6 +113,17 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
-
+    <style name="SearchRefreshButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="backgroundTint">?attr/colorOnSecondary</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/tl_text_size</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/bt_corner</item>
+        <item name="android:layout_marginTop">@dimen/twenty_four</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
 </resources>
 

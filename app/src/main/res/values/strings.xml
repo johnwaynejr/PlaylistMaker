@@ -19,6 +19,7 @@
     <string name="btn_clear">X</string>
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="something_went_wrong">Что-то пошло не так.Ошибка сервера...</string>
+    <string name="server_error">Ошибка сервера</string>
     <string name="title_activity_settings">activity_settings</string>
     <string name="no_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
 

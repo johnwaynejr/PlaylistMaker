@@ -83,6 +83,10 @@ class FindActivity : AppCompatActivity() {
             updButton.visibility=View.GONE
             hideKeyboard()
         }
+        // Обрабатываем нажатие на кнопку обновить
+        updButton.setOnClickListener {
+            searchQuery()
+        }
     // Инициализация TextWatcher
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -116,49 +120,52 @@ class FindActivity : AppCompatActivity() {
     //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА--------------------------------------------------
         queryInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                trackList.adapter = adapter
-                trackList.visibility = View.VISIBLE
-                hideKeyboard()
-                if (queryInput.text.isNotEmpty()) {
-                    iTunesService.search(queryInput.text.toString()).enqueue(object :
-                        Callback<SongResponse> {
-                        override fun onResponse(
-                            call: Call<SongResponse>,
-                            response: Response<SongResponse>
-                        ) {
-                            if (response.code() == 200) {
-                                tracks.clear()
-                                if (response.body()?.results?.isNotEmpty() == true) {
-                                    tracks.addAll(response.body()?.results!!)
-                                    trackList.adapter!!.notifyDataSetChanged()
-                                }
-                                if (tracks.isEmpty()) {
-                                    trackList.visibility = View.GONE
-                                    showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
-                                } else {
-                                    //showMessage("", "")
-                                }
-                            } else {
-                                trackList.visibility = View.GONE
-                                updButton.visibility=View.VISIBLE
-                                showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
-                            }
-                        }
-
-                        override fun onFailure(call: Call<SongResponse>, t: Throwable) {
-                            trackList.visibility = View.GONE
-                            updButton.visibility=View.VISIBLE
-                            showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
-                        }
-
-                    })
-                }
-                true
-
+                searchQuery()
             }
             false
         }
     }
+//Функция выполнения поискового запроса
+    private fun searchQuery(){
+    trackList.adapter = adapter
+    trackList.visibility = View.VISIBLE
+    hideKeyboard()
+    if (queryInput.text.isNotEmpty()) {
+        iTunesService.search(queryInput.text.toString()).enqueue(object :
+            Callback<SongResponse> {
+            override fun onResponse(
+                call: Call<SongResponse>,
+                response: Response<SongResponse>
+            ) {
+                if (response.code() == 200) {
+                    tracks.clear()
+                    if (response.body()?.results?.isNotEmpty() == true) {
+                        tracks.addAll(response.body()?.results!!)
+                        trackList.adapter!!.notifyDataSetChanged()
+                    }
+                    if (tracks.isEmpty()) {
+                        trackList.visibility = View.GONE
+                        updButton.visibility=View.GONE
+                        showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
+                    }
+                } else {
+                    trackList.visibility = View.GONE
+                    updButton.visibility=View.VISIBLE
+                    showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
+                }
+            }
+
+            override fun onFailure(call: Call<SongResponse>, t: Throwable) {
+                trackList.visibility = View.GONE
+                updButton.visibility=View.VISIBLE
+                showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
+            }
+
+        })
+    }
+    true
+
+}
 // Функция отображения заглушки при неудачном поиске
     private fun showQueryPlaceholder(image: Int, message: Int) {
         tracks.clear()
