@@ -146,18 +146,16 @@ class FindActivity : AppCompatActivity() {
                         trackList.adapter!!.notifyDataSetChanged()
                     }
                     if (tracks.isEmpty()) {
-                        hideTrackListAndWorkUpdButton(false)
-                        showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
+                       showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found,false)
                     }
                 } else {
-                    hideTrackListAndWorkUpdButton(true)
-                    showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
+
+                    showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong,true)
                 }
             }
 
             override fun onFailure(call: Call<SongResponse>, t: Throwable) {
-                hideTrackListAndWorkUpdButton(true)
-                showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
+               showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet,true)
             }
 
         })
@@ -165,20 +163,18 @@ class FindActivity : AppCompatActivity() {
     true
 
 }
-    //Функция скрытия списка треков и отображения кнопки "Обновить"
-    private fun hideTrackListAndWorkUpdButton(updBtnStatus: Boolean) {
-        trackList.visibility = View.GONE
-       if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
-    }
 
 
-// Функция отображения заглушки при неудачном поиске
-    private fun showQueryPlaceholder(image: Int, message: Int) {
+
+// Функция отображения заглушки при неудачном поиске, скрытие списка треков и отображения кнопки "Обновить"
+    private fun showQueryPlaceholder(image: Int, message: Int,updBtnStatus: Boolean) {
         tracks.clear()
         imageQueryStatus.visibility = View.VISIBLE
         imageQueryStatus.setImageResource(image)
         placeholderMessage.visibility = View.VISIBLE
         placeholderMessage.setText(message)
+        trackList.visibility = View.GONE
+        if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
     }
 // Функция скрытия клавиатуры
     private fun hideKeyboard() {
