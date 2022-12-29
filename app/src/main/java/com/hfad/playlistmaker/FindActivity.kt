@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -144,20 +146,17 @@ class FindActivity : AppCompatActivity() {
                         trackList.adapter!!.notifyDataSetChanged()
                     }
                     if (tracks.isEmpty()) {
-                        trackList.visibility = View.GONE
-                        updButton.visibility=View.GONE
+                        hideTrackListAndWorkUpdButton(false)
                         showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found)
                     }
                 } else {
-                    trackList.visibility = View.GONE
-                    updButton.visibility=View.VISIBLE
+                    hideTrackListAndWorkUpdButton(true)
                     showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong)
                 }
             }
 
             override fun onFailure(call: Call<SongResponse>, t: Throwable) {
-                trackList.visibility = View.GONE
-                updButton.visibility=View.VISIBLE
+                hideTrackListAndWorkUpdButton(true)
                 showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet)
             }
 
@@ -166,6 +165,13 @@ class FindActivity : AppCompatActivity() {
     true
 
 }
+    //Функция скрытия списка треков и отображения кнопки "Обновить"
+    private fun hideTrackListAndWorkUpdButton(updBtnStatus: Boolean) {
+        trackList.visibility = View.GONE
+       if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
+    }
+
+
 // Функция отображения заглушки при неудачном поиске
     private fun showQueryPlaceholder(image: Int, message: Int) {
         tracks.clear()
@@ -182,20 +188,6 @@ class FindActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
-    /*private fun showMessage(text: String, additionalMessage: String) {
-        if (text.isNotEmpty()) {
-            tracks.clear()
-            adapter.notifyDataSetChanged()
-            placeholderMessage.text = text
-            if (additionalMessage.isNotEmpty()) {
-                Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
-                    .show()
-            }
-        } else {
-            placeholderMessage.visibility = View.GONE
-        }
-    }*/
 
 }
 
