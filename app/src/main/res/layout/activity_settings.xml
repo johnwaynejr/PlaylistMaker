@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/colorPr"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/settings_header"
+        style="@style/TitleTextStyle"
+        android:layout_marginTop="@dimen/as_margin"
+        android:text="@string/as_header_text"
+        app:layout_constraintStart_toEndOf="@+id/settings_arrow_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/settings_arrow_back"
+        android:layout_width="@dimen/as_arrow_back_size"
+        android:layout_height="@dimen/as_arrow_back_size"
+        android:layout_marginStart="@dimen/as_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_header"
+        app:srcCompat="@drawable/arrowback"
+        app:tint="?attr/colorOnSecondary" />
+
+    <TextView
+        android:id="@+id/text_view_black_theme"
+        style="@style/MenuTextStyle"
+        android:layout_marginTop="@dimen/as_margin_top_big"
+        android:text="@string/dark_theme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_header" />
+
+    <TextView
+        android:id="@+id/text_view_share_app"
+        style="@style/MenuTextStyle"
+        android:text="@string/share_app"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_black_theme" />
+
+    <TextView
+        android:id="@+id/text_view_write_to_support"
+        style="@style/MenuTextStyle"
+        android:text="@string/mail_to_support"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_share_app" />
+
+    <TextView
+        android:id="@+id/text_view_user_note"
+        style="@style/MenuTextStyle"
+        android:text="@string/user_agreement"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_write_to_support" />
+
+    <Switch
+        android:id="@+id/switch_black_theme"
+        style="@style/SwitchStyle"
+        android:thumbTint="?attr/colorSecondaryVariant"
+        android:trackTint="?attr/colorSecondaryVariant"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_black_theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_view_black_theme"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <ImageView
+        android:id="@+id/iv_share"
+        style="@style/MenuIconStyle"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_share_app"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_view_share_app"
+        app:srcCompat="@drawable/share" />
+
+    <ImageView
+        android:id="@+id/iv_support"
+        style="@style/MenuIconStyle"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_write_to_support"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_view_write_to_support"
+        app:srcCompat="@drawable/support" />
+
+    <ImageView
+        android:id="@+id/iv_user_agreement"
+        style="@style/MenuIconStyle"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_user_note"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_view_user_note"
+        app:srcCompat="@drawable/arrowfwd" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

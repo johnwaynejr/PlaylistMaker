@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">PlaylistMaker</string>
+    <string name="main_menu_header">Playlist maker</string>
+    <string name="btn_find_text">Поиск</string>
+    <string name="btn_media_text">Медиатека</string>
+    <string name="btn_settings_text">Настройки</string>
+    <string name="as_header_text">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="mail_to_support">Написать в поддержку</string>
+    <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="mail_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="mail_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="uri_parse">mailto:</string>
+    <string name="email">for_mail_box@mail.ru</string>
+    <string name="send_intent_type">text/plain</string>
+    <string name="offer">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="btn_clear">X</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="something_went_wrong">Что-то пошло не так.Ошибка сервера...</string>
+    <string name="server_error">Ошибка сервера</string>
+    <string name="title_activity_settings">activity_settings</string>
+    <string name="no_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="no_track_time">нет данных</string>
+    <string name="btn_update">Обновить</string>
 </resources>
