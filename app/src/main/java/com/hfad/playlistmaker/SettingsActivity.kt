@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 const val THEME_PREFERENCES = "theme_preferences"
@@ -41,9 +40,9 @@ class SettingsActivity : AppCompatActivity() {
         //Обработка нажатия на кнопку "Написать в поддержку"
         val btnUserAgreement = findViewById<ImageView>(R.id.iv_user_agreement)
         btnUserAgreement.setOnClickListener{
-            val url = getString(R.string.offer);
-            val agreementIntent = Intent(Intent.ACTION_VIEW);
-            agreementIntent.setData(Uri.parse(url));
+            val url = getString(R.string.offer)
+            val agreementIntent = Intent(Intent.ACTION_VIEW)
+            agreementIntent.setData(Uri.parse(url))
             startActivity(agreementIntent)
         }
 

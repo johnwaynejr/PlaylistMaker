@@ -21,13 +21,11 @@
 
         <TextView
             android:id="@+id/trackName"
-            style="@style/track_name"
-            android:text="The man who sold the world"/>
+            style="@style/track_name" />
 
         <TextView
             android:id="@+id/trackArtist"
-            style="@style/track_artist"
-            android:text="David Bowie · 4:35"/>
+            style="@style/track_artist" />
 
     </LinearLayout>
 
