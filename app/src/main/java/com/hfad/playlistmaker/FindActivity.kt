@@ -37,7 +37,7 @@ class FindActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(iTunesApi::class.java)
 
     private lateinit var updButton: Button
-    private lateinit var queryInput: EditText
+    private lateinit var inputEditText:EditText
     private lateinit var placeholderMessage: TextView
     private lateinit var trackList: RecyclerView
     private lateinit var imageQueryStatus: ImageView
@@ -72,7 +72,7 @@ class FindActivity : AppCompatActivity() {
         setContentView(R.layout.activity_find)
 
         val btnBack = findViewById<ImageView>(R.id.find_activity_arrow_back)
-        val inputEditText = findViewById<EditText>(R.id.et_find)
+        inputEditText = findViewById<EditText>(R.id.et_find)
         val clearButton = findViewById<Button>(R.id.btn_clear)
         val fileName = getString(R.string.app_preference_file_name)
         val recentTracksListKey = getString(R.string.recent_tracks_list_key)
@@ -80,7 +80,6 @@ class FindActivity : AppCompatActivity() {
         recentTitle = findViewById(R.id.recent_tracks_title)
         imageQueryStatus = findViewById(R.id.statusImage)
         placeholderMessage = findViewById(R.id.placeholderMessage)
-        queryInput = findViewById(R.id.et_find)
         trackList = findViewById(R.id.recyclerView)
         updButton =findViewById(R.id.btnUpdate)
 
@@ -105,7 +104,9 @@ class FindActivity : AppCompatActivity() {
             imageQueryStatus.visibility=View.GONE
             updButton.visibility=View.GONE
             hideKeyboard()
-            showHistory()
+            if (searchHistory.recentTracksList.size > 0) {
+                showHistory()
+            }
         }
         // Обрабатываем нажатие на кнопку обновить
         updButton.setOnClickListener {
@@ -149,7 +150,7 @@ class FindActivity : AppCompatActivity() {
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
     //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА---------------------------
-        queryInput.setOnEditorActionListener { _, actionId, _ ->
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchQuery()
             }
@@ -164,8 +165,8 @@ class FindActivity : AppCompatActivity() {
     updButton.visibility = View.GONE
     trackList.visibility = View.VISIBLE
     hideKeyboard()
-    if (queryInput.text.isNotEmpty()) {
-        iTunesService.search(queryInput.text.toString()).enqueue(object :
+    if (inputEditText.text.isNotEmpty()) {
+        iTunesService.search(inputEditText.text.toString()).enqueue(object :
             Callback<SongResponse> {
             override fun onResponse(
                 call: Call<SongResponse>,
