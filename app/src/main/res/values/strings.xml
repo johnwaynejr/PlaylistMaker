@@ -42,6 +42,5 @@
     <string name="recent_tracks_list_title">Вы искали</string>
     <string name="app_preference_file_name">search_history</string>
     <string name="recent_tracks_list_key">RECENT_SEARCH_KEY</string>
-    <string name="clear_history_button">Очистить историю</string>
-    <string name="search_refresh_button_title">Обновить</string>
+    <string name="btn_clear_history">Очистить историю</string>
 </resources>

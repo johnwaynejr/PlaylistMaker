@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -85,12 +84,14 @@ class FindActivity : AppCompatActivity() {
         trackList = findViewById(R.id.recyclerView)
         updButton =findViewById(R.id.btnUpdate)
 
+        searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
+        searchHistory.loadFromFile()
+
         adapter = CustomRecyclerAdapter(tracks)
         adapter.addObserver(searchHistory)
         historyAdapter = CustomRecyclerAdapter(searchHistory.recentTracksList)
         historyAdapter.addObserver(searchHistory)
-        searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
-        searchHistory.loadFromFile()
+
 
     // Скрываем кнопки
         clearButton.visibility = View.GONE
@@ -108,8 +109,8 @@ class FindActivity : AppCompatActivity() {
         }
         // Обрабатываем нажатие на кнопку обновить
         updButton.setOnClickListener {
-            if (updButton.text == getString(R.string.search_refresh_button_title)) searchQuery()
-            if (updButton.text == getString(R.string.clear_history_button)) clearSearchingHistory()
+            if (updButton.text == getString(R.string.btn_update)) searchQuery()
+            if (updButton.text == getString(R.string.btn_clear_history)) clearSearchingHistory()
         }
 
         // Показываем историю
@@ -159,6 +160,8 @@ class FindActivity : AppCompatActivity() {
     //Функция выполнения поискового запроса
     private fun searchQuery(){
     trackList.adapter = adapter
+    recentTitle.visibility = View.GONE
+    updButton.visibility = View.GONE
     trackList.visibility = View.VISIBLE
     hideKeyboard()
     if (queryInput.text.isNotEmpty()) {
@@ -194,7 +197,7 @@ class FindActivity : AppCompatActivity() {
 }
     private fun showHistory() {
         recentTitle.visibility = View.VISIBLE
-        updButton.text = getString(R.string.clear_history_button)
+        updButton.text = getString(R.string.btn_clear_history)
         updButton.visibility = View.VISIBLE
 
         trackList.adapter = historyAdapter
@@ -217,6 +220,7 @@ class FindActivity : AppCompatActivity() {
         placeholderMessage.visibility = View.VISIBLE
         placeholderMessage.setText(message)
         trackList.visibility = View.GONE
+        updButton.text = getString(R.string.btn_update)
         if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
     }
 // Функция скрытия клавиатуры
