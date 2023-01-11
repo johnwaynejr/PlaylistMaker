@@ -6,10 +6,16 @@ import android.os.Bundle
 import android.widget.Button
 
 
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val sharedPrefs = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
+        var isDark = sharedPrefs.getBoolean(THEME_KEY, false)
+        val settingsTheme = SetTheme()
+        settingsTheme.switchTheme(isDark)
 
         val btnFind = findViewById<Button>(R.id.btn_find_am)
         btnFind.setOnClickListener {

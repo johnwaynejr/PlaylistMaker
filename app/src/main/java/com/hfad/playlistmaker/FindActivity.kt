@@ -27,6 +27,27 @@ class FindActivity : AppCompatActivity() {
         const val ET_VALUE = "ET_VALUE"
     }
 
+    private val itunesBaseUrl = "https://itunes.apple.com"
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(itunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val iTunesService = retrofit.create(iTunesApi::class.java)
+
+    private lateinit var updButton: Button
+    private lateinit var inputEditText:EditText
+    private lateinit var placeholderMessage: TextView
+    private lateinit var trackList: RecyclerView
+    private lateinit var imageQueryStatus: ImageView
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var recentTitle: TextView
+    private lateinit var historyAdapter: CustomRecyclerAdapter
+
+    private val tracks = ArrayList<Track>()
+    private var adapter = CustomRecyclerAdapter(tracks)
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val inputEditText = findViewById<EditText>(R.id.et_find)
@@ -41,41 +62,40 @@ class FindActivity : AppCompatActivity() {
         inputEditText.setText(strValET)
     }
 
-    private val itunesBaseUrl = "https://itunes.apple.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(itunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesService = retrofit.create(iTunesApi::class.java)
-
-    private val tracks = ArrayList<Track>()
-    private lateinit var updButton: Button
-    private lateinit var queryInput: EditText
-    private lateinit var placeholderMessage: TextView
-    private lateinit var trackList: RecyclerView
-    private lateinit var imageQueryStatus: ImageView
-
-
-    private val adapter = CustomRecyclerAdapter(tracks)
+    override fun onStop() {
+        super.onStop()
+        searchHistory.saveToFile()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find)
 
         val btnBack = findViewById<ImageView>(R.id.find_activity_arrow_back)
-        val inputEditText = findViewById<EditText>(R.id.et_find)
+        inputEditText = findViewById<EditText>(R.id.et_find)
         val clearButton = findViewById<Button>(R.id.btn_clear)
+        val fileName = getString(R.string.app_preference_file_name)
+        val recentTracksListKey = getString(R.string.recent_tracks_list_key)
+        val sharedPrefs = getSharedPreferences(fileName, MODE_PRIVATE)
+        recentTitle = findViewById(R.id.recent_tracks_title)
         imageQueryStatus = findViewById(R.id.statusImage)
         placeholderMessage = findViewById(R.id.placeholderMessage)
-        queryInput = findViewById(R.id.et_find)
         trackList = findViewById(R.id.recyclerView)
         updButton =findViewById(R.id.btnUpdate)
+
+        searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
+        searchHistory.loadFromFile()
+
+        adapter = CustomRecyclerAdapter(tracks)
+        adapter.addObserver(searchHistory)
+        historyAdapter = CustomRecyclerAdapter(searchHistory.recentTracksList)
+        historyAdapter.addObserver(searchHistory)
+
 
     // Скрываем кнопки
         clearButton.visibility = View.GONE
         updButton.visibility = View.GONE
+
     // Обрабатываем нажатие на кнопку очистки поля ввода
         clearButton.setOnClickListener {
             inputEditText.text.clear()
@@ -84,11 +104,21 @@ class FindActivity : AppCompatActivity() {
             imageQueryStatus.visibility=View.GONE
             updButton.visibility=View.GONE
             hideKeyboard()
+            if (searchHistory.recentTracksList.size > 0) {
+                showHistory()
+            }
         }
         // Обрабатываем нажатие на кнопку обновить
         updButton.setOnClickListener {
-            searchQuery()
+            if (updButton.text == getString(R.string.btn_update)) searchQuery()
+            if (updButton.text == getString(R.string.btn_clear_history)) clearSearchingHistory()
         }
+
+        // Показываем историю
+        if (searchHistory.recentTracksList.size > 0) {
+            showHistory()
+        }
+
     // Инициализация TextWatcher
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -119,21 +149,24 @@ class FindActivity : AppCompatActivity() {
         adapter.trackList=tracks
         trackList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-    //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА--------------------------------------------------
-        queryInput.setOnEditorActionListener { _, actionId, _ ->
+    //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА---------------------------
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchQuery()
             }
             false
         }
     }
-//Функция выполнения поискового запроса
+
+    //Функция выполнения поискового запроса
     private fun searchQuery(){
     trackList.adapter = adapter
+    recentTitle.visibility = View.GONE
+    updButton.visibility = View.GONE
     trackList.visibility = View.VISIBLE
     hideKeyboard()
-    if (queryInput.text.isNotEmpty()) {
-        iTunesService.search(queryInput.text.toString()).enqueue(object :
+    if (inputEditText.text.isNotEmpty()) {
+        iTunesService.search(inputEditText.text.toString()).enqueue(object :
             Callback<SongResponse> {
             override fun onResponse(
                 call: Call<SongResponse>,
@@ -163,9 +196,23 @@ class FindActivity : AppCompatActivity() {
     true
 
 }
+    private fun showHistory() {
+        recentTitle.visibility = View.VISIBLE
+        updButton.text = getString(R.string.btn_clear_history)
+        updButton.visibility = View.VISIBLE
 
+        trackList.adapter = historyAdapter
+        trackList.adapter!!.notifyDataSetChanged()
+        trackList.visibility = View.VISIBLE
 
+    }
 
+    private fun clearSearchingHistory() {
+        recentTitle.visibility = View.GONE
+        updButton.visibility = View.GONE
+        trackList.visibility = View.GONE
+        searchHistory.clearHistory()
+    }
 // Функция отображения заглушки при неудачном поиске, скрытие списка треков и отображения кнопки "Обновить"
     private fun showQueryPlaceholder(image: Int, message: Int,updBtnStatus: Boolean) {
         tracks.clear()
@@ -174,6 +221,7 @@ class FindActivity : AppCompatActivity() {
         placeholderMessage.visibility = View.VISIBLE
         placeholderMessage.setText(message)
         trackList.visibility = View.GONE
+        updButton.text = getString(R.string.btn_update)
         if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
     }
 // Функция скрытия клавиатуры
@@ -184,7 +232,6 @@ class FindActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
 }
 
 

@@ -43,14 +43,27 @@
             android:id="@+id/btn_clear"
             style="@style/ButtonStyleTransparent"
             android:text="@string/btn_clear" />
+
     </FrameLayout>
+    <TextView
+        android:id="@+id/recent_tracks_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/ys_display_medium"
+        android:gravity="center"
+        android:text="@string/recent_tracks_list_title"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/as_text_size"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/twenty_four"
-        tools:listitem="@layout/track_list_layout"/>
+        android:paddingTop="@dimen/twenty_four"/>
 
     <ImageView
         android:id="@+id/statusImage"
@@ -71,9 +84,10 @@
         android:textSize="@dimen/tl_text_size"
         android:textStyle="bold"
         android:visibility="gone"/>
-    <Button
-        android:id="@+id/btnUpdate"
-        style="@style/SearchRefreshButton"
-        android:text="@string/btn_update" />
+        <Button
+            android:id="@+id/btnUpdate"
+            style="@style/SearchRefreshButton"
+            android:text="@string/btn_update" />
+
 
 </LinearLayout>

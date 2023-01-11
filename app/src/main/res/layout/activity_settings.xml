@@ -26,20 +26,13 @@
         app:srcCompat="@drawable/arrowback"
         app:tint="?attr/colorOnSecondary" />
 
-    <TextView
-        android:id="@+id/text_view_black_theme"
-        style="@style/MenuTextStyle"
-        android:layout_marginTop="@dimen/as_margin_top_big"
-        android:text="@string/dark_theme"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_header" />
 
     <TextView
         android:id="@+id/text_view_share_app"
         style="@style/MenuTextStyle"
         android:text="@string/share_app"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_black_theme" />
+        app:layout_constraintTop_toBottomOf="@+id/themeSwitcher" />
 
     <TextView
         android:id="@+id/text_view_write_to_support"
@@ -55,14 +48,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_write_to_support" />
 
-    <Switch
-        android:id="@+id/switch_black_theme"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitcher"
         style="@style/SwitchStyle"
-        android:thumbTint="?attr/colorSecondaryVariant"
-        android:trackTint="?attr/colorSecondaryVariant"
-        app:layout_constraintBottom_toBottomOf="@+id/text_view_black_theme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_view_black_theme"
+        android:text="@string/dark_theme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_header"
         tools:ignore="TouchTargetSizeCheck" />
 
     <ImageView
