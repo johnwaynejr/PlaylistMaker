@@ -24,7 +24,7 @@
         android:id="@+id/player_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:background="@null"
         android:contentDescription="@string/app_name"
         android:minWidth="48dp"
@@ -77,35 +77,41 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/player_track_property_length"/>
 
+    <TextView
+        android:id="@+id/player_track_property_length_plus"
+        style="@style/PlayerTrackPropertyValue"
+        android:text="5:35"
+        android:layout_marginEnd="@dimen/sixteen"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/player_track_property_length"
+        app:layout_constraintStart_toEndOf="@id/player_track_property_length" />
+
     <TextView style="@style/PlayerTrackPropertyValue"
         android:id="@+id/player_track_value_country"
         app:layout_constraintBottom_toBottomOf="@id/player_track_property_country"
-        app:layout_constraintStart_toEndOf="@id/player_track_property_country"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Великобритания"/>
 
     <TextView style="@style/PlayerTrackPropertyValue"
         android:id="@+id/player_track_value_genre"
         app:layout_constraintBottom_toBottomOf="@id/player_track_property_genre"
-        app:layout_constraintStart_toEndOf="@id/player_track_property_genre"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Rock"/>
 
     <TextView style="@style/PlayerTrackPropertyValue"
         android:id="@+id/player_track_value_release"
         app:layout_constraintBottom_toBottomOf="@id/player_track_property_release"
-        app:layout_constraintStart_toEndOf="@id/player_track_property_release"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="1965"/>
 
-    <TextView style="@style/PlayerTrackPropertyValue"
+    <TextView
         android:id="@+id/player_track_value_album"
+        style="@style/PlayerTrackPropertyValue"
         app:layout_constraintBottom_toBottomOf="@id/player_track_property_album"
-        app:layout_constraintStart_toEndOf="@id/player_track_property_album"
-        tools:text="Yesterday (Remastered 2009)"/>
-
-    <TextView style="@style/PlayerTrackPropertyValue"
-        android:id="@+id/player_track_value_length"
-        app:layout_constraintBottom_toBottomOf="@id/player_track_property_length"
-        app:layout_constraintStart_toEndOf="@id/player_track_property_length"
-        tools:text="5:35"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_track_property_album"
+        tools:text="Yesterday (Remastered 2009)" />
 
     <ImageButton
         android:id="@+id/player_play_button"
@@ -130,7 +136,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/player_play_button"
-        android:textColor="@color/theme_hard_text_color"
+        android:textColor="?attr/colorOnSecondary"
         tools:text="0:30"/>
 
     <ImageButton
@@ -184,13 +190,6 @@
         app:layout_constraintBottom_toTopOf="@id/player_artist_name"
         android:textColor="?attr/colorOnSecondary"
         tools:text="Yesterday (Remastered 2009)"/>
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/player_addButtons_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="player_add_to_playlist_button, player_add_to_favorites_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

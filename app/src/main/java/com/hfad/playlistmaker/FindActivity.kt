@@ -1,6 +1,7 @@
 package com.hfad.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -232,6 +233,7 @@ class FindActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
 }
 
 
