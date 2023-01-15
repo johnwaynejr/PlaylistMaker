@@ -20,9 +20,7 @@ class SearchHistory(
                 break
             }
         }
-        recentTracksList.reverse()
         recentTracksList.add(track)
-        recentTracksList.reverse()
 
         if (recentTracksList.size > 10) {
             recentTracksList.removeAt(10)

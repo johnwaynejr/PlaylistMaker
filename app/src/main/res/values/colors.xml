@@ -12,4 +12,13 @@
     <color name="gray_light">#E6E8EB</color>
 
     <color name="tint_if_theme">#FF000000</color>
+
+    <color name="fill_color">#FFFFFF</color>
+    <color name="theme_hard_text_color">#1A1B22</color>
+    <color name="theme_soft_text_color">#AEAFB4</color>
+    <color name="text_color_single">#1A1B22</color>
+    <color name="setting_arrow_back">#1A1B22</color>
+    <color name="text_edit_fill_color">#E6E8EB</color>
+    <color name="text_edit_icon_color">#AEAFB4</color>
+    <color name="player_add_track_button_color">#401A1B22</color>
 </resources>

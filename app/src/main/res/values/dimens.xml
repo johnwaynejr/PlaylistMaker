@@ -4,6 +4,7 @@
     <dimen name="mm_btn_margin_bottom">10dp</dimen>
     <dimen name="mm_btn_icon_padding">10dp</dimen>
     <dimen name="mm_btn_corner_radius">20dp</dimen>
+    <dimen name="sixteen">16dp</dimen>
     <dimen name="twenty_four">24dp</dimen>
     <dimen name="mm_btn_font_size">24sp</dimen>
     <dimen name="as_arrow_back_size">24dp</dimen>
