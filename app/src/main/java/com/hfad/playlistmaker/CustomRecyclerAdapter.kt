@@ -3,6 +3,7 @@ package com.hfad.playlistmaker
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -21,9 +22,11 @@ class CustomRecyclerAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
+            searchHistory.addTrackToRecentList(trackList[position])
+            searchHistory.saveToFile()
             val intent = Intent(it.context, PlayerActivity::class.java)
             holder.itemView.context.startActivity(intent)
-            searchHistory.addTrackToRecentList(trackList[position])
+
         }
     }
 

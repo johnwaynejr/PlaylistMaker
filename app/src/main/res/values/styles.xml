@@ -148,11 +148,52 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/sixteen</item>
         <item name="android:layout_marginEnd">@dimen/sixteen</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/as_text_size</item>
         <item name="fontFamily">@font/ys_display_regular</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="player_cover">
+        <item name="android:layout_width">512px</item>
+        <item name="android:layout_height">512px</item>
+        <item name="android:layout_marginTop">56dp</item>
+        <item name="android:layout_marginStart">@dimen/twenty_four</item>
+        <item name="android:layout_marginEnd">@dimen/twenty_four</item>
+    </style>
+
+    <style name="player_btn_back">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/mm_btn_margin_bottom</item>
+        <item name="android:layout_marginStart">@dimen/margin_six</item>
+        <item name="android:layout_marginTop">@dimen/margin_six</item>
+        <item name="android:background">@null</item>
+        <item name="android:contentDescription">@string/app_name</item>
+        <item name="android:minWidth">@dimen/edit_text_min_height</item>
+        <item name="android:minHeight">@dimen/edit_text_min_height</item>
+    </style>
+
+    <style name="player_track_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/twenty_four</item>
+        <item name="android:textSize">@dimen/text_twenty_two</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:layout_marginStart">@dimen/twenty_four</item>
+        <item name="android:layout_marginEnd">@dimen/twenty_four</item>
+    </style>
+
+    <style name="player_track_title_small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/mm_btn_margin_bottom</item>
+        <item name="android:layout_marginStart">@dimen/twenty_four</item>
+        <item name="android:layout_marginEnd">@dimen/twenty_four</item>
+        <item name="android:textSize">@dimen/text_fourteen</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
     </style>
 
 </resources>

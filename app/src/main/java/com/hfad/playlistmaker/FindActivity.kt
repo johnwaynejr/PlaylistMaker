@@ -1,7 +1,6 @@
 package com.hfad.playlistmaker
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -61,11 +60,6 @@ class FindActivity : AppCompatActivity() {
         val inputEditText = findViewById<EditText>(R.id.et_find)
         val strValET=savedInstanceState.getString(ET_VALUE)
         inputEditText.setText(strValET)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        searchHistory.saveToFile()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

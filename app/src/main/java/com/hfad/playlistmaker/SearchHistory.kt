@@ -12,7 +12,7 @@ class SearchHistory(
 
     var recentTracksList = ArrayList<Track>()
         private set
-    var recentTrack = recentTracksList[0]
+
 
     override fun addTrackToRecentList(track: Track) {
         for (i in recentTracksList) {
@@ -26,7 +26,6 @@ class SearchHistory(
         if (recentTracksList.size > 10) {
             recentTracksList.removeAt(10)
         }
-        recentTrack = track
     }
 
     fun clearHistory() {
@@ -34,13 +33,13 @@ class SearchHistory(
         saveToFile()
     }
 
-    fun loadFromFile() {
+ fun loadFromFile() {
         val json: String = file.getString(key, null) ?: return
         recentTracksList.addAll(Gson().fromJson(json, Array<Track>::class.java))
-        recentTrack = recentTracksList.last()
+
     }
 
-    fun saveToFile() {
+   override fun saveToFile() {
         val json = Gson().toJson(recentTracksList)
         file.edit()
             .putString(key, json)

@@ -1,6 +1,5 @@
 package com.hfad.playlistmaker
 
-import android.content.Intent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,7 +28,7 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .transform(RoundedCorners(10))
             .into(image)
     }
-    private fun formatTrackDuration(timeTrack: String?): String {
+ private fun formatTrackDuration(timeTrack: String?): String {
         if (timeTrack != null) {
             return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeTrack.toInt())
         }

@@ -7,56 +7,37 @@
 
     <ImageButton
         android:id="@+id/player_back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="440dp"
-        android:background="@null"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrowback" />
+        app:srcCompat="@drawable/arrowback"
+        app:tint="?attr/colorOnSecondary"
+        style="@style/player_btn_back" />
 
     <ImageView
         android:id="@+id/playerTrackCover"
-        android:layout_width="512px"
-        android:layout_height="512px"
-        android:layout_marginTop="56dp"
-        android:layout_marginStart="@dimen/twenty_four"
-        android:layout_marginEnd="@dimen/twenty_four"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/album" />
+        app:srcCompat="@drawable/album"
+        style="@style/player_cover" />
 
     <TextView
         android:id="@+id/playerTrackName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Yersterday (Remastered 2009)"
-        android:textSize="@dimen/twenty_four"
-        android:layout_marginStart="@dimen/twenty_four"
-        android:layout_marginEnd="@dimen/twenty_four"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerTrackCover" />
+        app:layout_constraintTop_toBottomOf="@+id/playerTrackCover"
+        style="@style/player_track_title" />
 
     <TextView
         android:id="@+id/playerTrackArtist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="@dimen/twenty_four"
-        android:layout_marginEnd="@dimen/twenty_four"
-        android:text="The Beatles"
+        android:text="@string/the_beatles"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playerTrackName"/>
+        app:layout_constraintTop_toBottomOf="@+id/playerTrackName"
+        style="@style/player_track_title_small" />
     <ImageButton
         android:id="@+id/playerAddToPlaylistBtn"
         android:layout_width="wrap_content"
@@ -133,7 +114,7 @@
         app:layout_constraintTop_toBottomOf="@+id/playerTrackDurationText" />
 
     <TextView
-        android:id="@+id/playerTrackNameTwo"
+        android:id="@+id/playerTrackAlbum"
         style="@style/PlayerTrackPropertyValue"
         android:layout_marginEnd="16dp"
         android:text="Yesterday(Remastered 2009)"
