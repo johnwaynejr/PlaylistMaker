@@ -32,7 +32,6 @@ class PlayerActivity : AppCompatActivity() {
 
         val trackCover = findViewById<ImageView>(R.id.playerTrackCover)
 
-        //clearTrackData()
         initVariables()
 
         val searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
@@ -70,17 +69,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-  private fun clearTrackData(){
-        trackNameTitle.setText("")
-        trackArtist.setText("")
-        trackDuration.setText("")
-        trackAlbum.setText("")
-        trackYear.setText("")
-        trackGenre.setText("")
-        trackCountry.setText("")
-    }
-
-    private fun initVariables(){
+   private fun initVariables(){
         trackNameTitle = findViewById(R.id.playerTrackName)
         trackArtist = findViewById(R.id.playerTrackArtist)
         trackDuration = findViewById(R.id.playerTrackDuration)
