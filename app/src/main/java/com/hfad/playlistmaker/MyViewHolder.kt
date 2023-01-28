@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+
 
 class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var trackTextView: TextView = itemView.findViewById(R.id.trackName)
@@ -27,7 +28,7 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .transform(RoundedCorners(10))
             .into(image)
     }
-    private fun formatTrackDuration(timeTrack: String?): String {
+ private fun formatTrackDuration(timeTrack: String?): String {
         if (timeTrack != null) {
             return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeTrack.toInt())
         }

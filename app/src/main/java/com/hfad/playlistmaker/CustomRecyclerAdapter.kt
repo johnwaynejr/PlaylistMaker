@@ -1,17 +1,17 @@
 package com.hfad.playlistmaker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.collections.ArrayList
+
 
 class CustomRecyclerAdapter(
     var trackList: ArrayList<Track>
     ) : RecyclerView.Adapter<MyViewHolder>(), Observable  {
 
     private lateinit var searchHistory: Observer
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -22,13 +22,11 @@ class CustomRecyclerAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
-            Toast.makeText(
-                holder.itemView.context,
-                "Трек добавлен в историю",
-                Toast.LENGTH_SHORT
-            ).show()
-
             searchHistory.addTrackToRecentList(trackList[position])
+            searchHistory.saveToFile()
+            val intent = Intent(it.context, PlayerActivity::class.java)
+            holder.itemView.context.startActivity(intent)
+
         }
     }
 
@@ -37,4 +35,5 @@ class CustomRecyclerAdapter(
     override fun addObserver(observer: Observer) {
         searchHistory = observer
     }
+
 }

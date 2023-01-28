@@ -62,11 +62,6 @@ class FindActivity : AppCompatActivity() {
         inputEditText.setText(strValET)
     }
 
-    override fun onStop() {
-        super.onStop()
-        searchHistory.saveToFile()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find)
@@ -232,6 +227,7 @@ class FindActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
 }
 
 
