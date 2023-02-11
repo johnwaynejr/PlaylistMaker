@@ -2,6 +2,8 @@ package com.hfad.playlistmaker
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -24,7 +26,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 class FindActivity : AppCompatActivity() {
 
     companion object {
-        const val ET_VALUE = "ET_VALUE"
+        private const val ET_VALUE = "ET_VALUE"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
@@ -47,6 +51,11 @@ class FindActivity : AppCompatActivity() {
 
     private val tracks = ArrayList<Track>()
     private var adapter = CustomRecyclerAdapter(tracks)
+
+    //Инициализация для работы с потоками
+    private val searchRunnable = Runnable { searchQuery() }
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -120,14 +129,15 @@ class FindActivity : AppCompatActivity() {
                 // empty
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 if (s.isNullOrEmpty()) {
                     clearButton.visibility = View.INVISIBLE
                 } else {
                     clearButton.visibility = View.VISIBLE
                 }
-
+                searchDebounce()
+            }
             override fun afterTextChanged(p0: Editable?) {
                 //empty
             }
@@ -227,6 +237,12 @@ class FindActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
 
 }
 
