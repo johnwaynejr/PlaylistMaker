@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +49,7 @@ class FindActivity : AppCompatActivity() {
     private lateinit var searchHistory: SearchHistory
     private lateinit var recentTitle: TextView
     private lateinit var historyAdapter: CustomRecyclerAdapter
+    private  lateinit var progressBar: ProgressBar
 
     private val tracks = ArrayList<Track>()
     private var adapter = CustomRecyclerAdapter(tracks)
@@ -86,6 +88,8 @@ class FindActivity : AppCompatActivity() {
         placeholderMessage = findViewById(R.id.placeholderMessage)
         trackList = findViewById(R.id.recyclerView)
         updButton =findViewById(R.id.btnUpdate)
+        progressBar=findViewById(R.id.progressBar)
+        progressBar.visibility = View.GONE
 
         searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
         searchHistory.loadFromFile()
@@ -169,14 +173,15 @@ class FindActivity : AppCompatActivity() {
     recentTitle.visibility = View.GONE
     updButton.visibility = View.GONE
     trackList.visibility = View.VISIBLE
+    progressBar.visibility = View.VISIBLE
     hideKeyboard()
     if (inputEditText.text.isNotEmpty()) {
         iTunesService.search(inputEditText.text.toString()).enqueue(object :
             Callback<SongResponse> {
             override fun onResponse(
                 call: Call<SongResponse>,
-                response: Response<SongResponse>
-            ) {
+                response: Response<SongResponse>) {
+                progressBar.visibility = View.GONE // Прячем ProgressBar после успешного выполнения запроса
                 if (response.code() == 200) {
                     tracks.clear()
                     if (response.body()?.results?.isNotEmpty() == true) {
