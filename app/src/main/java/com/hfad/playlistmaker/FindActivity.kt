@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,12 +56,16 @@ class FindActivity : AppCompatActivity() {
     private var adapter = CustomRecyclerAdapter{
         if(clickDebounce()) {
             val intent = Intent(this, PlayerActivity::class.java)
+            val json = Gson().toJson(it)
+            intent.putExtra("track", json)
             startActivity(intent)
         }
     }
   private var  historyAdapter = CustomRecyclerAdapter{
         if(clickDebounce()) {
             val intent = Intent(this, PlayerActivity::class.java)
+            val json = Gson().toJson(it)
+            intent.putExtra("track", json)
             startActivity(intent)
         }
     }

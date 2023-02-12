@@ -50,4 +50,5 @@
     <string name="player_track_property_length">Длительность</string>
     <string name="long_track_name">Длительность</string>
     <string name="the_beatles">The Beatles</string>
+    <string name="track">track</string>
 </resources>
