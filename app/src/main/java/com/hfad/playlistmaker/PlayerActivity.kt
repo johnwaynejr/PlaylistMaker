@@ -1,7 +1,10 @@
 package com.hfad.playlistmaker
 
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -21,7 +24,11 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var trackYear:TextView
     private lateinit var trackGenre:TextView
     private lateinit var trackCountry:TextView
+    private lateinit var player: Player
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val mediaPlayer = MediaPlayer()
+    private lateinit var timeElapsed:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +40,7 @@ class PlayerActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageButton>(R.id.player_back_button)
         val trackCover = findViewById<ImageView>(R.id.playerTrackCover)
         val playBtn = findViewById<ImageButton>(R.id.playerPlayBtn)
-        val timeElapsed = findViewById<TextView>(R.id.playerTrackDurationLive)
+        timeElapsed = findViewById(R.id.playerTrackDurationLive)
 
         initVariables()
 
@@ -44,13 +51,13 @@ class PlayerActivity : AppCompatActivity() {
 
         //Подгтовка плеера
         val trackURl=currentTrack.previewUrl
-        val player = Player(playBtn,timeElapsed,trackURl)
+        player = Player(mediaPlayer,playBtn,timeElapsed,trackURl,handler)
         player.preparePlayer()
 
         //Обрабатываем нажатие кнопки Play
         playBtn.setOnClickListener {
             player.playbackControl()
-            player.timeElapse()
+            timeElapse()
         }
 
         val smallCover = currentTrack.artworkUrl100
@@ -102,6 +109,38 @@ class PlayerActivity : AppCompatActivity() {
         return "нет данных"
     }
 
+    fun timeElapse(){
+        var tElapsed = SimpleDateFormat("mm:ss", Locale.getDefault()).format(
+            mediaPlayer.duration-mediaPlayer.currentPosition)
+        timeElapsed.text = tElapsed
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        handler?.postDelayed(
+            object : Runnable {
+                override fun run() {
+                    // Обновляем список в главном потоке
+                    if(player.playerState == Player.STATE_PLAYING) {
+                        timeElapse()
+                    }
+                    // И снова планируем то же действие через 1 секунду
+                    handler?.postDelayed(this, Player.TIME_ELAPSED_DELAY)
+                }
+            }, Player.TIME_ELAPSED_DELAY
+        )
+    }
+    override fun onPause() {
+        super.onPause()
+        player.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks({player.playerState >=0})
+        mediaPlayer.release()
+
+    }
 
 }
