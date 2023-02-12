@@ -1,6 +1,7 @@
 package com.hfad.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -48,13 +49,23 @@ class FindActivity : AppCompatActivity() {
     private lateinit var imageQueryStatus: ImageView
     private lateinit var searchHistory: SearchHistory
     private lateinit var recentTitle: TextView
-    private lateinit var historyAdapter: CustomRecyclerAdapter
-    private  lateinit var progressBar: ProgressBar
+   private  lateinit var progressBar: ProgressBar
 
     private val tracks = ArrayList<Track>()
-    private var adapter = CustomRecyclerAdapter(tracks)
+    private var adapter = CustomRecyclerAdapter{
+        if(clickDebounce()) {
+            val intent = Intent(this, PlayerActivity::class.java)
+            startActivity(intent)
+        }
+    }
+  private var  historyAdapter = CustomRecyclerAdapter{
+        if(clickDebounce()) {
+            val intent = Intent(this, PlayerActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
-    //Инициализация для работы с потоками
+    //Инициализация переменных для работы с потоками
     private val searchRunnable = Runnable { searchQuery() }
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
@@ -94,9 +105,9 @@ class FindActivity : AppCompatActivity() {
         searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
         searchHistory.loadFromFile()
 
-        adapter = CustomRecyclerAdapter(tracks)
+        adapter.trackList = tracks
         adapter.addObserver(searchHistory)
-        historyAdapter = CustomRecyclerAdapter(searchHistory.recentTracksList)
+        historyAdapter.trackList=searchHistory.recentTracksList
         historyAdapter.addObserver(searchHistory)
 
 
@@ -139,8 +150,9 @@ class FindActivity : AppCompatActivity() {
                     clearButton.visibility = View.INVISIBLE
                 } else {
                     clearButton.visibility = View.VISIBLE
+                    searchDebounce()
                 }
-                searchDebounce()
+
             }
             override fun afterTextChanged(p0: Editable?) {
                 //empty
@@ -173,6 +185,8 @@ class FindActivity : AppCompatActivity() {
     recentTitle.visibility = View.GONE
     updButton.visibility = View.GONE
     trackList.visibility = View.VISIBLE
+    imageQueryStatus.visibility = View.GONE
+    placeholderMessage.visibility = View.GONE
     progressBar.visibility = View.VISIBLE
     hideKeyboard()
     if (inputEditText.text.isNotEmpty()) {
@@ -247,7 +261,14 @@ class FindActivity : AppCompatActivity() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
-
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
 
 }
 

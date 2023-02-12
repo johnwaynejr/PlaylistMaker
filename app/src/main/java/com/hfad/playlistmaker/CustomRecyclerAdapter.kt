@@ -1,16 +1,13 @@
 package com.hfad.playlistmaker
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 
 
-class CustomRecyclerAdapter(
-    var trackList: ArrayList<Track>
-    ) : RecyclerView.Adapter<MyViewHolder>(), Observable  {
+class CustomRecyclerAdapter(val clickListener: TrackClickListener) : RecyclerView.Adapter<MyViewHolder>(), Observable  {
 
+    var trackList=ArrayList<Track>()
     private lateinit var searchHistory: Observer
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -24,8 +21,9 @@ class CustomRecyclerAdapter(
         holder.itemView.setOnClickListener {
             searchHistory.addTrackToRecentList(trackList[position])
             searchHistory.saveToFile()
-            val intent = Intent(it.context, PlayerActivity::class.java)
-            holder.itemView.context.startActivity(intent)
+            holder.itemView.setOnClickListener { clickListener.onTrackClick(trackList.get(position)) }
+            //val intent = Intent(it.context, PlayerActivity::class.java)
+            //holder.itemView.context.startActivity(intent)
 
         }
     }
@@ -34,6 +32,10 @@ class CustomRecyclerAdapter(
 
     override fun addObserver(observer: Observer) {
         searchHistory = observer
+    }
+
+    fun interface TrackClickListener {
+        fun onTrackClick(track: Track)
     }
 
 }

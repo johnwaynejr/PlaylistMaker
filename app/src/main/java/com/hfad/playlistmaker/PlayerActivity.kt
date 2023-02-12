@@ -2,6 +2,7 @@ package com.hfad.playlistmaker
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,6 +22,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var trackGenre:TextView
     private lateinit var trackCountry:TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
@@ -29,14 +31,27 @@ class PlayerActivity : AppCompatActivity() {
         val recentTracksListKey = getString(R.string.recent_tracks_list_key)
         val sharedPrefs = getSharedPreferences(fileName, MODE_PRIVATE)
         val btnBack = findViewById<ImageButton>(R.id.player_back_button)
-
         val trackCover = findViewById<ImageView>(R.id.playerTrackCover)
+        val playBtn = findViewById<ImageButton>(R.id.playerPlayBtn)
+        val timeElapsed = findViewById<TextView>(R.id.playerTrackDurationLive)
 
         initVariables()
 
+        //Извлекаем данные о выбранном треке
         val searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
         searchHistory.loadFromFile()
         val currentTrack = searchHistory.recentTracksList.last()
+
+        //Подгтовка плеера
+        val trackURl=currentTrack.previewUrl
+        val player = Player(playBtn,timeElapsed,trackURl)
+        player.preparePlayer()
+
+        //Обрабатываем нажатие кнопки Play
+        playBtn.setOnClickListener {
+            player.playbackControl()
+            player.timeElapse()
+        }
 
         val smallCover = currentTrack.artworkUrl100
         fun getCoverArtwork() = smallCover.replaceAfterLast('/',"512x512bb.jpg")
