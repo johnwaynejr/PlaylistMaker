@@ -35,9 +35,6 @@ class PlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        //val fileName = getString(R.string.app_preference_file_name)
-        //val recentTracksListKey = getString(R.string.recent_tracks_list_key)
-        //val sharedPrefs = getSharedPreferences(fileName, MODE_PRIVATE)
         val btnBack = findViewById<ImageButton>(R.id.player_back_button)
         val trackCover = findViewById<ImageView>(R.id.playerTrackCover)
         val playBtn = findViewById<ImageButton>(R.id.playerPlayBtn)
@@ -45,10 +42,7 @@ class PlayerActivity : AppCompatActivity() {
 
         initVariables()
 
-        //Извлекаем данные о выбранном треке
-       // val searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
-       // searchHistory.loadFromFile()
-        //val currentTrack = searchHistory.recentTracksList.last()
+        //Получаем данные о выбранном треке
         var json = intent.getStringExtra("track")
         val currentTrack=Gson().fromJson(json, Track::class.java)
         //Подгтовка плеера
