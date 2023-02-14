@@ -57,6 +57,7 @@ class FindActivity : AppCompatActivity() {
         if(clickDebounce()) {
             val intent = Intent(this, PlayerActivity::class.java)
             val json = Gson().toJson(it)
+            searchHistory.saveToFile()
             intent.putExtra("track", json)
             startActivity(intent)
         }

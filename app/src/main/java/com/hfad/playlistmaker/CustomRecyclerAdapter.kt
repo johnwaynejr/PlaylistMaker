@@ -20,8 +20,7 @@ class CustomRecyclerAdapter(val clickListener: TrackClickListener) : RecyclerVie
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
             searchHistory.addTrackToRecentList(trackList[position])
-            searchHistory.saveToFile()
-            holder.itemView.setOnClickListener { clickListener.onTrackClick(trackList.get(position)) }
+            clickListener.onTrackClick(trackList.get(position))
         }
     }
 
