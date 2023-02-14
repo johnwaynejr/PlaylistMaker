@@ -22,9 +22,6 @@ class CustomRecyclerAdapter(val clickListener: TrackClickListener) : RecyclerVie
             searchHistory.addTrackToRecentList(trackList[position])
             searchHistory.saveToFile()
             holder.itemView.setOnClickListener { clickListener.onTrackClick(trackList.get(position)) }
-            //val intent = Intent(it.context, PlayerActivity::class.java)
-            //holder.itemView.context.startActivity(intent)
-
         }
     }
 

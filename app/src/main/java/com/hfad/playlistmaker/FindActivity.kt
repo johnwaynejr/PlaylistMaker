@@ -123,7 +123,7 @@ class FindActivity : AppCompatActivity() {
     // Обрабатываем нажатие на кнопку очистки поля ввода
         clearButton.setOnClickListener {
             inputEditText.text.clear()
-            trackList.visibility = View.GONE
+            trackList.visibility = View.INVISIBLE
             placeholderMessage.visibility=View.GONE
             imageQueryStatus.visibility=View.GONE
             updButton.visibility=View.GONE
@@ -239,7 +239,7 @@ class FindActivity : AppCompatActivity() {
     private fun clearSearchingHistory() {
         recentTitle.visibility = View.GONE
         updButton.visibility = View.GONE
-        trackList.visibility = View.GONE
+        trackList.visibility = View.INVISIBLE
         searchHistory.clearHistory()
     }
 // Функция отображения заглушки при неудачном поиске, скрытие списка треков и отображения кнопки "Обновить"
@@ -249,7 +249,7 @@ class FindActivity : AppCompatActivity() {
         imageQueryStatus.setImageResource(image)
         placeholderMessage.visibility = View.VISIBLE
         placeholderMessage.setText(message)
-        trackList.visibility = View.GONE
+        trackList.visibility = View.INVISIBLE
         updButton.text = getString(R.string.btn_update)
         if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
     }
