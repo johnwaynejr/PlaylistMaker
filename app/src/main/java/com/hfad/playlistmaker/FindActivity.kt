@@ -1,7 +1,10 @@
 package com.hfad.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -10,10 +13,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,7 +29,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 class FindActivity : AppCompatActivity() {
 
     companion object {
-        const val ET_VALUE = "ET_VALUE"
+        private const val ET_VALUE = "ET_VALUE"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
@@ -43,10 +50,31 @@ class FindActivity : AppCompatActivity() {
     private lateinit var imageQueryStatus: ImageView
     private lateinit var searchHistory: SearchHistory
     private lateinit var recentTitle: TextView
-    private lateinit var historyAdapter: CustomRecyclerAdapter
+   private  lateinit var progressBar: ProgressBar
 
     private val tracks = ArrayList<Track>()
-    private var adapter = CustomRecyclerAdapter(tracks)
+    private var adapter = CustomRecyclerAdapter{
+        if(clickDebounce()) {
+            val intent = Intent(this, PlayerActivity::class.java)
+            val json = Gson().toJson(it)
+            searchHistory.saveToFile()
+            intent.putExtra("track", json)
+            startActivity(intent)
+        }
+    }
+  private var  historyAdapter = CustomRecyclerAdapter{
+        if(clickDebounce()) {
+            val intent = Intent(this, PlayerActivity::class.java)
+            val json = Gson().toJson(it)
+            intent.putExtra("track", json)
+            startActivity(intent)
+        }
+    }
+
+    //Инициализация переменных для работы с потоками
+    private val searchRunnable = Runnable { searchQuery() }
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -77,13 +105,15 @@ class FindActivity : AppCompatActivity() {
         placeholderMessage = findViewById(R.id.placeholderMessage)
         trackList = findViewById(R.id.recyclerView)
         updButton =findViewById(R.id.btnUpdate)
+        progressBar=findViewById(R.id.progressBar)
+        progressBar.visibility = View.GONE
 
         searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
         searchHistory.loadFromFile()
 
-        adapter = CustomRecyclerAdapter(tracks)
+        adapter.trackList = tracks
         adapter.addObserver(searchHistory)
-        historyAdapter = CustomRecyclerAdapter(searchHistory.recentTracksList)
+        historyAdapter.trackList=searchHistory.recentTracksList
         historyAdapter.addObserver(searchHistory)
 
 
@@ -94,7 +124,7 @@ class FindActivity : AppCompatActivity() {
     // Обрабатываем нажатие на кнопку очистки поля ввода
         clearButton.setOnClickListener {
             inputEditText.text.clear()
-            trackList.visibility = View.GONE
+            trackList.visibility = View.INVISIBLE
             placeholderMessage.visibility=View.GONE
             imageQueryStatus.visibility=View.GONE
             updButton.visibility=View.GONE
@@ -120,14 +150,16 @@ class FindActivity : AppCompatActivity() {
                 // empty
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 if (s.isNullOrEmpty()) {
                     clearButton.visibility = View.INVISIBLE
                 } else {
                     clearButton.visibility = View.VISIBLE
+                    searchDebounce()
                 }
 
+            }
             override fun afterTextChanged(p0: Editable?) {
                 //empty
             }
@@ -159,14 +191,17 @@ class FindActivity : AppCompatActivity() {
     recentTitle.visibility = View.GONE
     updButton.visibility = View.GONE
     trackList.visibility = View.VISIBLE
+    imageQueryStatus.visibility = View.GONE
+    placeholderMessage.visibility = View.GONE
+    progressBar.visibility = View.VISIBLE
     hideKeyboard()
     if (inputEditText.text.isNotEmpty()) {
         iTunesService.search(inputEditText.text.toString()).enqueue(object :
             Callback<SongResponse> {
             override fun onResponse(
                 call: Call<SongResponse>,
-                response: Response<SongResponse>
-            ) {
+                response: Response<SongResponse>) {
+                progressBar.visibility = View.GONE // Прячем ProgressBar после успешного выполнения запроса
                 if (response.code() == 200) {
                     tracks.clear()
                     if (response.body()?.results?.isNotEmpty() == true) {
@@ -205,7 +240,7 @@ class FindActivity : AppCompatActivity() {
     private fun clearSearchingHistory() {
         recentTitle.visibility = View.GONE
         updButton.visibility = View.GONE
-        trackList.visibility = View.GONE
+        trackList.visibility = View.INVISIBLE
         searchHistory.clearHistory()
     }
 // Функция отображения заглушки при неудачном поиске, скрытие списка треков и отображения кнопки "Обновить"
@@ -215,7 +250,7 @@ class FindActivity : AppCompatActivity() {
         imageQueryStatus.setImageResource(image)
         placeholderMessage.visibility = View.VISIBLE
         placeholderMessage.setText(message)
-        trackList.visibility = View.GONE
+        trackList.visibility = View.INVISIBLE
         updButton.text = getString(R.string.btn_update)
         if(updBtnStatus) updButton.visibility=View.VISIBLE else updButton.visibility=View.GONE
     }
@@ -226,6 +261,19 @@ class FindActivity : AppCompatActivity() {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 
 }

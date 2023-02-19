@@ -1,12 +1,17 @@
 package com.hfad.playlistmaker
 
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -20,23 +25,36 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var trackYear:TextView
     private lateinit var trackGenre:TextView
     private lateinit var trackCountry:TextView
+    private lateinit var player: Player
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val mediaPlayer = MediaPlayer()
+    private lateinit var timeElapsed:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        val fileName = getString(R.string.app_preference_file_name)
-        val recentTracksListKey = getString(R.string.recent_tracks_list_key)
-        val sharedPrefs = getSharedPreferences(fileName, MODE_PRIVATE)
         val btnBack = findViewById<ImageButton>(R.id.player_back_button)
-
         val trackCover = findViewById<ImageView>(R.id.playerTrackCover)
+        val playBtn = findViewById<ImageButton>(R.id.playerPlayBtn)
+        timeElapsed = findViewById(R.id.playerTrackDurationLive)
 
         initVariables()
 
-        val searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
-        searchHistory.loadFromFile()
-        val currentTrack = searchHistory.recentTracksList.last()
+        //Получаем данные о выбранном треке
+        var json = intent.getStringExtra("track")
+        val currentTrack=Gson().fromJson(json, Track::class.java)
+        //Подгтовка плеера
+        val trackURl=currentTrack.previewUrl
+        player = Player(mediaPlayer,playBtn,timeElapsed,trackURl,handler)
+        player.preparePlayer()
+
+        //Обрабатываем нажатие кнопки Play
+        playBtn.setOnClickListener {
+            player.playbackControl()
+            timeElapse()
+        }
 
         val smallCover = currentTrack.artworkUrl100
         fun getCoverArtwork() = smallCover.replaceAfterLast('/',"512x512bb.jpg")
@@ -87,6 +105,38 @@ class PlayerActivity : AppCompatActivity() {
         return "нет данных"
     }
 
+    fun timeElapse(){
+        var tElapsed = SimpleDateFormat("mm:ss", Locale.getDefault()).format(
+            mediaPlayer.duration-mediaPlayer.currentPosition)
+        timeElapsed.text = tElapsed
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        handler?.postDelayed(
+            object : Runnable {
+                override fun run() {
+                    // Обновляем список в главном потоке
+                    if(player.playerState == Player.STATE_PLAYING) {
+                        timeElapse()
+                    }
+                    // И снова планируем то же действие через 1 секунду
+                    handler?.postDelayed(this, Player.TIME_ELAPSED_DELAY)
+                }
+            }, Player.TIME_ELAPSED_DELAY
+        )
+    }
+    override fun onPause() {
+        super.onPause()
+        player.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks({player.playerState >=0})
+        mediaPlayer.release()
+
+    }
 
 }

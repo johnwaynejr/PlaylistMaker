@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="@dimen/as_margin">
@@ -43,7 +43,6 @@
             android:id="@+id/btn_clear"
             style="@style/ButtonStyleTransparent"
             android:text="@string/btn_clear" />
-
     </FrameLayout>
     <TextView
         android:id="@+id/recent_tracks_title"
@@ -57,37 +56,53 @@
         android:text="@string/recent_tracks_list_title"
         android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/as_text_size"
-        android:visibility="gone" />
+        android:visibility="gone"/>
+
+
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="@dimen/twenty_four"/>
+
+    <ProgressBar android:id="@+id/progressBar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="@dimen/one_hundred_fourteen"
+        android:indeterminateTint="@color/purple_500"
+        />
 
     <ImageView
         android:id="@+id/statusImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="112dp"
         android:backgroundTint="@color/white"
-        android:visibility="gone" />
+        app:srcCompat="@drawable/findnothing"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/placeholderMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/one_hundred"
         android:fontFamily="@font/ys_display_medium"
         android:textAlignment="center"
         android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/tl_text_size"
         android:textStyle="bold"
-        android:visibility="gone"/>
+        />
         <Button
             android:id="@+id/btnUpdate"
             style="@style/SearchRefreshButton"
-            android:text="@string/btn_update" />
-
-
+            android:text="@string/btn_update"
+            android:layout_marginBottom="@dimen/as_margin_top_big"
+            android:layout_gravity="center|bottom"
+            android:visibility="gone"/>
+    </FrameLayout>
 </LinearLayout>
