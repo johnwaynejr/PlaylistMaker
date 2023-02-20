@@ -1,10 +1,16 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-
+import com.hfad.playlistmaker.features.search.ui.SearchActivity
+import com.hfad.playlistmaker.features.media.MediaLibraryActivity
+import com.hfad.playlistmaker.R
+import com.hfad.playlistmaker.features.settings.domain.SetTheme
+import com.hfad.playlistmaker.features.settings.ui.SettingsActivity
+import com.hfad.playlistmaker.features.settings.ui.THEME_KEY
+import com.hfad.playlistmaker.features.settings.ui.THEME_PREFERENCES
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnFind = findViewById<Button>(R.id.btn_find_am)
         btnFind.setOnClickListener {
-            val displayIntent = Intent(this, FindActivity::class.java)
+            val displayIntent = Intent(this, SearchActivity::class.java)
             startActivity(displayIntent)
         }
 

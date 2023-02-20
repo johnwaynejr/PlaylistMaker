@@ -1,19 +1,23 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.player.ui
 
+import android.content.Intent
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
+import com.hfad.playlistmaker.R
+import com.hfad.playlistmaker.features.App
+import com.hfad.playlistmaker.features.player.data.JsonTrackInteractorImpl
+import com.hfad.playlistmaker.features.player.domain.impl.Player
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.system.exitProcess
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -38,13 +42,13 @@ class PlayerActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageButton>(R.id.player_back_button)
         val trackCover = findViewById<ImageView>(R.id.playerTrackCover)
         val playBtn = findViewById<ImageButton>(R.id.playerPlayBtn)
-        timeElapsed = findViewById(R.id.playerTrackDurationLive)
 
         initVariables()
 
         //Получаем данные о выбранном треке
-        var json = intent.getStringExtra("track")
-        val currentTrack=Gson().fromJson(json, Track::class.java)
+        var jsonT = intent.getStringExtra(App.TRACK_KEY)
+        var jsonInteractor= JsonTrackInteractorImpl()
+        var currentTrack = jsonInteractor.getTrack(jsonT!!)
         //Подгтовка плеера
         val trackURl=currentTrack.previewUrl
         player = Player(mediaPlayer,playBtn,timeElapsed,trackURl,handler)
@@ -61,10 +65,11 @@ class PlayerActivity : AppCompatActivity() {
         val bigCover=getCoverArtwork()
 
         val longTrackAlbum = currentTrack.collectionName
-        val shortTrackAlbum = if (longTrackAlbum.length<30) longTrackAlbum else longTrackAlbum.substring(0,29)
+        val shortTrackAlbum = if (longTrackAlbum.length<40) longTrackAlbum else longTrackAlbum.substring(0,39)
 
         val longDate = currentTrack.releaseDate
-        val shortDate = longDate.substring(0,4)
+        val shortDate = if (longDate==null) "no data" else longDate.substring(0,4)
+
   // Переносим данные на экран плеера
         Glide.with(this)
             .load(bigCover)
@@ -95,13 +100,13 @@ class PlayerActivity : AppCompatActivity() {
         trackYear = findViewById(R.id.playerTrackYear)
         trackGenre = findViewById(R.id.playerTrackGenre)
         trackCountry = findViewById(R.id.playerTrackCountry)
+        timeElapsed = findViewById(R.id.playerTrackDurationLive)
     }
 
     private fun formatTrackDuration(timeTrack: String?): String {
         if (timeTrack != null) {
             return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeTrack.toInt())
         }
-
         return "нет данных"
     }
 
@@ -136,7 +141,6 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
         handler.removeCallbacks({player.playerState >=0})
         mediaPlayer.release()
-
     }
 
 }

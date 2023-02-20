@@ -1,10 +1,12 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.settings.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.hfad.playlistmaker.R
+import com.hfad.playlistmaker.features.settings.domain.SetTheme
 
 const val THEME_PREFERENCES = "theme_preferences"
 const val THEME_KEY = "set_theme"

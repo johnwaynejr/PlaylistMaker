@@ -1,4 +1,4 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.search.domain
 
 import android.view.View
 import android.widget.ImageView
@@ -6,6 +6,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.hfad.playlistmaker.R
+import com.hfad.playlistmaker.features.player.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 

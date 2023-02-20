@@ -1,9 +1,10 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.player.domain.impl
 import android.media.MediaPlayer
 import android.os.Handler
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.hfad.playlistmaker.R
 
 
 class Player(val mediaPlayer:MediaPlayer,val play: ImageButton, val timeElapsed: TextView ,val url:String, val handler:Handler) : AppCompatActivity() {
@@ -42,7 +43,7 @@ class Player(val mediaPlayer:MediaPlayer,val play: ImageButton, val timeElapsed:
         mediaPlayer.pause()
         play.setImageResource(R.drawable.btn_play)
         playerState = STATE_PAUSED
-        handler.removeCallbacks({playerState == STATE_PAUSED})
+        handler.removeCallbacks({playerState == STATE_PAUSED })
     }
      fun playbackControl() {
         when(playerState) {

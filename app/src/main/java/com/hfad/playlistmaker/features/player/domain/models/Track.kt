@@ -1,4 +1,4 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.player.domain.models
 
 
 data class Track (
@@ -11,4 +11,4 @@ data class Track (
     val country: String, //Страна исполнителя
     val trackTimeMillis: String?, // Продолжительность трека
     val previewUrl:String, //Превью трека
-    val artworkUrl100: String)// Ссылка на изображение обложки
+    val artworkUrl100: String) // Ссылка на изображение обложки

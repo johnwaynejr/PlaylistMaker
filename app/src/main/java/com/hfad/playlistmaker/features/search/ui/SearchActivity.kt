@@ -1,4 +1,4 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.search.ui
 
 import android.content.Context
 import android.content.Intent
@@ -19,6 +19,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.hfad.playlistmaker.features.player.ui.PlayerActivity
+import com.hfad.playlistmaker.R
+import com.hfad.playlistmaker.features.player.domain.models.Track
+import com.hfad.playlistmaker.features.search.domain.CustomRecyclerAdapter
+import com.hfad.playlistmaker.features.search.data.SearchHistoryStorage
+import com.hfad.playlistmaker.features.player.data.network.TrackResponse
+import com.hfad.playlistmaker.features.search.iTunesApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +33,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class FindActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val ET_VALUE = "ET_VALUE"
@@ -48,7 +55,7 @@ class FindActivity : AppCompatActivity() {
     private lateinit var placeholderMessage: TextView
     private lateinit var trackList: RecyclerView
     private lateinit var imageQueryStatus: ImageView
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistoryStorage: SearchHistoryStorage
     private lateinit var recentTitle: TextView
    private  lateinit var progressBar: ProgressBar
 
@@ -57,7 +64,7 @@ class FindActivity : AppCompatActivity() {
         if(clickDebounce()) {
             val intent = Intent(this, PlayerActivity::class.java)
             val json = Gson().toJson(it)
-            searchHistory.saveToFile()
+            searchHistoryStorage.saveToFile()
             intent.putExtra("track", json)
             startActivity(intent)
         }
@@ -108,13 +115,13 @@ class FindActivity : AppCompatActivity() {
         progressBar=findViewById(R.id.progressBar)
         progressBar.visibility = View.GONE
 
-        searchHistory = SearchHistory(sharedPrefs, recentTracksListKey)
-        searchHistory.loadFromFile()
+        searchHistoryStorage = SearchHistoryStorage(sharedPrefs, recentTracksListKey)
+        searchHistoryStorage.loadFromFile()
 
         adapter.trackList = tracks
-        adapter.addObserver(searchHistory)
-        historyAdapter.trackList=searchHistory.recentTracksList
-        historyAdapter.addObserver(searchHistory)
+        adapter.addObserver(searchHistoryStorage)
+        historyAdapter.trackList=searchHistoryStorage.recentTracksList
+        historyAdapter.addObserver(searchHistoryStorage)
 
 
     // Скрываем кнопки
@@ -129,7 +136,7 @@ class FindActivity : AppCompatActivity() {
             imageQueryStatus.visibility=View.GONE
             updButton.visibility=View.GONE
             hideKeyboard()
-            if (searchHistory.recentTracksList.size > 0) {
+            if (searchHistoryStorage.recentTracksList.size > 0) {
                 showHistory()
             }
         }
@@ -140,7 +147,7 @@ class FindActivity : AppCompatActivity() {
         }
 
         // Показываем историю
-        if (searchHistory.recentTracksList.size > 0) {
+        if (searchHistoryStorage.recentTracksList.size > 0) {
             showHistory()
         }
 
@@ -197,10 +204,10 @@ class FindActivity : AppCompatActivity() {
     hideKeyboard()
     if (inputEditText.text.isNotEmpty()) {
         iTunesService.search(inputEditText.text.toString()).enqueue(object :
-            Callback<SongResponse> {
+            Callback<TrackResponse> {
             override fun onResponse(
-                call: Call<SongResponse>,
-                response: Response<SongResponse>) {
+                call: Call<TrackResponse>,
+                response: Response<TrackResponse>) {
                 progressBar.visibility = View.GONE // Прячем ProgressBar после успешного выполнения запроса
                 if (response.code() == 200) {
                     tracks.clear()
@@ -209,16 +216,16 @@ class FindActivity : AppCompatActivity() {
                         trackList.adapter!!.notifyDataSetChanged()
                     }
                     if (tracks.isEmpty()) {
-                       showQueryPlaceholder(R.drawable.findnothing,R.string.nothing_found,false)
+                       showQueryPlaceholder(R.drawable.findnothing, R.string.nothing_found,false)
                     }
                 } else {
 
-                    showQueryPlaceholder(R.drawable.finderror,R.string.something_went_wrong,true)
+                    showQueryPlaceholder(R.drawable.finderror, R.string.something_went_wrong,true)
                 }
             }
 
-            override fun onFailure(call: Call<SongResponse>, t: Throwable) {
-               showQueryPlaceholder(R.drawable.nointernet,R.string.no_internet,true)
+            override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+               showQueryPlaceholder(R.drawable.nointernet, R.string.no_internet,true)
             }
 
         })
@@ -241,7 +248,7 @@ class FindActivity : AppCompatActivity() {
         recentTitle.visibility = View.GONE
         updButton.visibility = View.GONE
         trackList.visibility = View.INVISIBLE
-        searchHistory.clearHistory()
+        searchHistoryStorage.clearStorage()
     }
 // Функция отображения заглушки при неудачном поиске, скрытие списка треков и отображения кнопки "Обновить"
     private fun showQueryPlaceholder(image: Int, message: Int,updBtnStatus: Boolean) {
