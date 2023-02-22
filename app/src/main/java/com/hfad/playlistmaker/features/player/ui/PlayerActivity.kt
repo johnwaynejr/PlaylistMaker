@@ -22,18 +22,18 @@ import kotlin.system.exitProcess
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var trackNameTitle:TextView
-    private lateinit var trackArtist:TextView
-    private lateinit var trackDuration:TextView
-    private lateinit var trackAlbum:TextView
-    private lateinit var trackYear:TextView
-    private lateinit var trackGenre:TextView
-    private lateinit var trackCountry:TextView
+    private lateinit var trackNameTitle: TextView
+    private lateinit var trackArtist: TextView
+    private lateinit var trackDuration: TextView
+    private lateinit var trackAlbum: TextView
+    private lateinit var trackYear: TextView
+    private lateinit var trackGenre: TextView
+    private lateinit var trackCountry: TextView
     private lateinit var player: Player
 
     private val handler = Handler(Looper.getMainLooper())
     private val mediaPlayer = MediaPlayer()
-    private lateinit var timeElapsed:TextView
+    private lateinit var timeElapsed: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,11 +47,11 @@ class PlayerActivity : AppCompatActivity() {
 
         //Получаем данные о выбранном треке
         var jsonT = intent.getStringExtra(App.TRACK_KEY)
-        var jsonInteractor= JsonTrackInteractorImpl()
+        var jsonInteractor = JsonTrackInteractorImpl()
         var currentTrack = jsonInteractor.getTrack(jsonT!!)
         //Подгтовка плеера
-        val trackURl=currentTrack.previewUrl
-        player = Player(mediaPlayer,playBtn,timeElapsed,trackURl,handler)
+        val trackURl = currentTrack.previewUrl
+        player = Player(mediaPlayer, playBtn, timeElapsed, trackURl, handler)
         player.preparePlayer()
 
         //Обрабатываем нажатие кнопки Play
@@ -60,17 +60,15 @@ class PlayerActivity : AppCompatActivity() {
             timeElapse()
         }
 
-        val smallCover = currentTrack.artworkUrl100
-        fun getCoverArtwork() = smallCover.replaceAfterLast('/',"512x512bb.jpg")
-        val bigCover=getCoverArtwork()
 
+        val bigCover = currentTrack.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
         val longTrackAlbum = currentTrack.collectionName
-        val shortTrackAlbum = if (longTrackAlbum.length<40) longTrackAlbum else longTrackAlbum.substring(0,39)
+        val shortTrackAlbum =
+            if (longTrackAlbum.length < 40) longTrackAlbum else longTrackAlbum.substring(0, 39)
 
-        val longDate = currentTrack.releaseDate
-        val shortDate = if (longDate==null) "no data" else longDate.substring(0,4)
+        val shortDate = currentTrack.releaseDate.substring(0, 4)
 
-  // Переносим данные на экран плеера
+        // Переносим данные на экран плеера
         Glide.with(this)
             .load(bigCover)
             .placeholder(R.drawable.findnothing)
@@ -92,7 +90,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-   private fun initVariables(){
+    private fun initVariables() {
         trackNameTitle = findViewById(R.id.playerTrackName)
         trackArtist = findViewById(R.id.playerTrackArtist)
         trackDuration = findViewById(R.id.playerTrackDuration)
@@ -110,9 +108,10 @@ class PlayerActivity : AppCompatActivity() {
         return "нет данных"
     }
 
-    fun timeElapse(){
+    fun timeElapse() {
         var tElapsed = SimpleDateFormat("mm:ss", Locale.getDefault()).format(
-            mediaPlayer.duration-mediaPlayer.currentPosition)
+            mediaPlayer.duration - mediaPlayer.currentPosition
+        )
         timeElapsed.text = tElapsed
     }
 
@@ -123,7 +122,7 @@ class PlayerActivity : AppCompatActivity() {
             object : Runnable {
                 override fun run() {
                     // Обновляем список в главном потоке
-                    if(player.playerState == Player.STATE_PLAYING) {
+                    if (player.playerState == Player.STATE_PLAYING) {
                         timeElapse()
                     }
                     // И снова планируем то же действие через 1 секунду
@@ -132,6 +131,7 @@ class PlayerActivity : AppCompatActivity() {
             }, Player.TIME_ELAPSED_DELAY
         )
     }
+
     override fun onPause() {
         super.onPause()
         player.pausePlayer()
@@ -139,7 +139,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks({player.playerState >=0})
+        handler.removeCallbacks({ player.playerState >= 0 })
         mediaPlayer.release()
     }
 

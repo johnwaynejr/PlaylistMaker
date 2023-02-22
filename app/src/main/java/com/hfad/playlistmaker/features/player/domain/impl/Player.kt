@@ -1,13 +1,19 @@
 package com.hfad.playlistmaker.features.player.domain.impl
+
 import android.media.MediaPlayer
 import android.os.Handler
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.hfad.playlistmaker.R
 
 
-class Player(val mediaPlayer:MediaPlayer,val play: ImageButton, val timeElapsed: TextView ,val url:String, val handler:Handler) : AppCompatActivity() {
+class Player(
+    val mediaPlayer: MediaPlayer,
+    val play: ImageButton,
+    val timeElapsed: TextView,
+    val url: String,
+    val handler: Handler
+) {
 
     companion object {
         const val STATE_DEFAULT = 0
@@ -30,23 +36,25 @@ class Player(val mediaPlayer:MediaPlayer,val play: ImageButton, val timeElapsed:
         mediaPlayer.setOnCompletionListener {
             play.setImageResource(R.drawable.btn_play)
             playerState = STATE_PREPARED
-            timeElapsed.text="00:00"
+            timeElapsed.text = "00:00"
         }
     }
+
     private fun startPlayer() {
         mediaPlayer.start()
         play.setImageResource(R.drawable.btn_pause)
         playerState = STATE_PLAYING
     }
 
-     fun pausePlayer() {
+    fun pausePlayer() {
         mediaPlayer.pause()
         play.setImageResource(R.drawable.btn_play)
         playerState = STATE_PAUSED
-        handler.removeCallbacks({playerState == STATE_PAUSED })
+        handler.removeCallbacks({ playerState == STATE_PAUSED })
     }
-     fun playbackControl() {
-        when(playerState) {
+
+    fun playbackControl() {
+        when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
             }

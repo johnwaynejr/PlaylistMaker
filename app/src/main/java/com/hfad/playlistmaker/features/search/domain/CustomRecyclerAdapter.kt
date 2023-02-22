@@ -9,10 +9,11 @@ import com.hfad.playlistmaker.features.search.domain.api.Observable
 import com.hfad.playlistmaker.features.search.domain.api.Observer
 
 
-class CustomRecyclerAdapter(val clickListener: TrackClickListener) : RecyclerView.Adapter<MyViewHolder>(),
+class CustomRecyclerAdapter(val clickListener: TrackClickListener) :
+    RecyclerView.Adapter<MyViewHolder>(),
     Observable {
 
-    var trackList=ArrayList<Track>()
+    var trackList = ArrayList<Track>()
     private lateinit var searchHistory: Observer
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -24,7 +25,7 @@ class CustomRecyclerAdapter(val clickListener: TrackClickListener) : RecyclerVie
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
-            searchHistory.addTrackToStorage(trackList[position])
+            //searchHistory.addTrackToStorage(trackList[position])
             clickListener.onTrackClick(trackList.get(position))
         }
     }

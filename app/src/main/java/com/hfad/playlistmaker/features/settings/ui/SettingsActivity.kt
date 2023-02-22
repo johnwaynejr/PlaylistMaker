@@ -1,4 +1,5 @@
 package com.hfad.playlistmaker.features.settings.ui
+
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -28,12 +29,12 @@ class SettingsActivity : AppCompatActivity() {
         }
         //Обработка нажатия на кнопку "Написать в поддержку"
         val btnSupport = findViewById<ImageView>(R.id.iv_support)
-        btnSupport.setOnClickListener{
+        btnSupport.setOnClickListener {
             val subject = getString(R.string.mail_subject)
             val message = getString(R.string.mail_message)
             val supportIntent = Intent(Intent.ACTION_SENDTO)
             supportIntent.data = Uri.parse(getString(R.string.uri_parse))
-            supportIntent.putExtra(Intent.EXTRA_EMAIL,getString(R.string.email))
+            supportIntent.putExtra(Intent.EXTRA_EMAIL, getString(R.string.email))
             supportIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
             supportIntent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(supportIntent)
@@ -41,7 +42,7 @@ class SettingsActivity : AppCompatActivity() {
 
         //Обработка нажатия на кнопку "Написать в поддержку"
         val btnUserAgreement = findViewById<ImageView>(R.id.iv_user_agreement)
-        btnUserAgreement.setOnClickListener{
+        btnUserAgreement.setOnClickListener {
             val url = getString(R.string.offer)
             val agreementIntent = Intent(Intent.ACTION_VIEW)
             agreementIntent.setData(Uri.parse(url))
@@ -50,24 +51,25 @@ class SettingsActivity : AppCompatActivity() {
 
         //Обработка нажатия на кнопку "Назад"
         val btnBack = findViewById<ImageView>(R.id.settings_arrow_back)
-        btnBack.setOnClickListener{
+        btnBack.setOnClickListener {
             onBackPressed()
         }
 
 
     }
-    private fun initUI(){
+
+    private fun initUI() {
         val sharedPrefs = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
         val settingsTheme = SetTheme()
         themeSwitcher.isChecked = sharedPrefs.getBoolean(THEME_KEY, false)
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
-         settingsTheme.switchTheme(isChecked)
+            settingsTheme.switchTheme(isChecked)
             sharedPrefs.edit()
-            .putBoolean(THEME_KEY, isChecked)
-            .apply()
+                .putBoolean(THEME_KEY, isChecked)
+                .apply()
+        }
     }
-}
 
 }
 

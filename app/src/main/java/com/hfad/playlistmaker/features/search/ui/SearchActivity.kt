@@ -25,6 +25,7 @@ import com.hfad.playlistmaker.features.player.domain.models.Track
 import com.hfad.playlistmaker.features.search.domain.CustomRecyclerAdapter
 import com.hfad.playlistmaker.features.search.data.SearchHistoryStorage
 import com.hfad.playlistmaker.features.player.data.network.TrackResponse
+import com.hfad.playlistmaker.features.search.domain.api.Observer
 import com.hfad.playlistmaker.features.search.iTunesApi
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,14 +58,15 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var imageQueryStatus: ImageView
     private lateinit var searchHistoryStorage: SearchHistoryStorage
     private lateinit var recentTitle: TextView
-   private  lateinit var progressBar: ProgressBar
+    private  lateinit var progressBar: ProgressBar
 
     private val tracks = ArrayList<Track>()
     private var adapter = CustomRecyclerAdapter{
         if(clickDebounce()) {
+            searchHistoryStorage.addTrackToStorage(it)
+            searchHistoryStorage.saveToFile()
             val intent = Intent(this, PlayerActivity::class.java)
             val json = Gson().toJson(it)
-            searchHistoryStorage.saveToFile()
             intent.putExtra("track", json)
             startActivity(intent)
         }

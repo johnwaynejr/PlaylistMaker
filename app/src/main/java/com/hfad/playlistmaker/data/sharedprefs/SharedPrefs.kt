@@ -4,8 +4,10 @@ import com.google.gson.Gson
 import android.content.SharedPreferences
 
 // Заготовка для реализации SharedPrefs в отдельном классе
-class SharedPrefs <T>(private val file: SharedPreferences,
-                  private val key: String,type: Class<Array<T>>) {
+class SharedPrefs<T>(
+    private val file: SharedPreferences,
+    private val key: String, type: Class<Array<T>>
+) {
 
     var objectsList = type
 
@@ -23,7 +25,7 @@ class SharedPrefs <T>(private val file: SharedPreferences,
     }
 
     fun clearFile() {
-      // objectsList.clear()
+        // objectsList.clear()
         saveToFile()
     }
 }
