@@ -1,7 +1,6 @@
 package com.hfad.playlistmaker.features.player.domain.api
 
-import android.content.Intent
-import com.hfad.playlistmaker.features.player.domain.models.Track
+import com.hfad.playlistmaker.features.search.domain.models.Track
 
 interface JsonTrackInteractor {
 

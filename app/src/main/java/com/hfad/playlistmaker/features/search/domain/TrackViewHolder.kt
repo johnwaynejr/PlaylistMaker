@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.hfad.playlistmaker.R
-import com.hfad.playlistmaker.features.player.domain.models.Track
+import com.hfad.playlistmaker.features.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var trackTextView: TextView = itemView.findViewById(R.id.trackName)
     var artistTextView: TextView = itemView.findViewById(R.id.trackArtist)
     var image: ImageView = itemView.findViewById(R.id.artistCover)

@@ -2,18 +2,17 @@ package com.hfad.playlistmaker.features.search.data
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.hfad.playlistmaker.features.player.domain.models.Track
+import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.features.search.domain.api.Observer
-import com.hfad.playlistmaker.features.search.domain.api.TrackStorage
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class SearchHistoryStorage(
-    private val file: SharedPreferences,
-    private val key: String
-) : TrackStorage, Observer {
 
+class SearchHistoryStorage(fileShared:SharedPreferences,keyShared:String) : Observer {
+
+    private  var file =fileShared
+    private  var key =keyShared
     var recentTracksList = ArrayList<Track>()
 
     override fun addTrackToStorage(track: Track) {
@@ -30,7 +29,7 @@ class SearchHistoryStorage(
         }
     }
 
-    override fun clearStorage() {
+ fun clearStorage() {
         recentTracksList.clear()
         saveToFile()
     }

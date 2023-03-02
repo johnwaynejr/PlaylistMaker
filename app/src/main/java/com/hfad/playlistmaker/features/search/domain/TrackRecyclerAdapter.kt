@@ -4,29 +4,28 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hfad.playlistmaker.R
-import com.hfad.playlistmaker.features.player.domain.models.Track
+import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.features.search.domain.api.Observable
 import com.hfad.playlistmaker.features.search.domain.api.Observer
 
 
-class CustomRecyclerAdapter(val clickListener: TrackClickListener) :
-    RecyclerView.Adapter<MyViewHolder>(),
+class TrackRecyclerAdapter(val clickListener: TrackClickListener) :
+    RecyclerView.Adapter<TrackViewHolder>(),
     Observable {
 
     var trackList = ArrayList<Track>()
     private lateinit var searchHistory: Observer
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.track_list_layout, parent, false)
-        return MyViewHolder(itemView)
+        return TrackViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
-            //searchHistory.addTrackToStorage(trackList[position])
-            clickListener.onTrackClick(trackList.get(position))
+           clickListener.onTrackClick(trackList.get(position))
         }
     }
 

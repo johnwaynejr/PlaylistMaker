@@ -12,14 +12,13 @@ import com.hfad.playlistmaker.features.settings.ui.SettingsActivity
 import com.hfad.playlistmaker.features.settings.ui.THEME_KEY
 import com.hfad.playlistmaker.features.settings.ui.THEME_PREFERENCES
 
-
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val sharedPrefs = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
-        var isDark = sharedPrefs.getBoolean(THEME_KEY, false)
+        val isDark = sharedPrefs.getBoolean(THEME_KEY, false)
         val settingsTheme = SetTheme()
         settingsTheme.switchTheme(isDark)
 

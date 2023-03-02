@@ -1,7 +1,6 @@
-package com.hfad.playlistmaker.features.player.domain.models
+package com.hfad.playlistmaker.features.search.data.dto
 
-
-data class Track(
+data class TrackDto(
     val trackId: String,
     val trackName: String,  // Название композиции
     val artistName: String, // Имя исполнителя
