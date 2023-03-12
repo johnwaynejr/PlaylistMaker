@@ -45,7 +45,7 @@
             android:text="@string/btn_clear" />
     </FrameLayout>
     <TextView
-        android:id="@+id/recent_tracks_title"
+        android:id="@+id/history_tracks_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

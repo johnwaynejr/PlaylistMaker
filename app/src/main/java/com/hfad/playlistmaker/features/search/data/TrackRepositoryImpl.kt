@@ -4,13 +4,18 @@ import com.hfad.playlistmaker.features.search.data.dto.TrackSearchRequest
 import com.hfad.playlistmaker.features.search.data.dto.TrackSearchResponse
 import com.hfad.playlistmaker.features.search.domain.api.TrackRepository
 import com.hfad.playlistmaker.features.search.domain.models.Track
+import com.hfad.playlistmaker.util.Resource
 
-class TrackRepositoryImpl (private val networkClient: NetworkClient) : TrackRepository {
+class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
-        override fun search(expression: String): List<Track> {
-            val response = networkClient.doRequest(TrackSearchRequest(expression))
-            if (response.resultCode == 200) {
-                return (response as TrackSearchResponse).results.map {
+    override fun search(expression: String): Resource<List<Track>> {
+        val response = networkClient.doRequest(TrackSearchRequest(expression))
+        return when (response.resultCode) {
+            -1 -> {
+                Resource.Error("Проверьте подключение к интернету")
+            }
+            200 -> {
+                Resource.Success((response as TrackSearchResponse).results.map {
                     Track(
                         it.trackId,
                         it.trackName,
@@ -21,9 +26,13 @@ class TrackRepositoryImpl (private val networkClient: NetworkClient) : TrackRepo
                         it.country,
                         it.trackTimeMillis,
                         it.previewUrl,
-                        it.artworkUrl100) }
-            } else {
-                return emptyList()
+                        it.artworkUrl100
+                    )
+                })
+            }
+            else -> {
+                Resource.Error("Ошибка сервера")
             }
         }
     }
+}
