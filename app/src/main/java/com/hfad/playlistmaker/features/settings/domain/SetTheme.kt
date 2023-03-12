@@ -1,10 +1,10 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.settings.domain
 
 import androidx.appcompat.app.AppCompatDelegate
 
-public class SetTheme {
+class SetTheme {
 
-fun switchTheme(darkThemeEnabled: Boolean) {
+    fun switchTheme(darkThemeEnabled: Boolean) {
 
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {

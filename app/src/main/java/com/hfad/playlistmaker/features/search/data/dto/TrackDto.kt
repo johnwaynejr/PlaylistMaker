@@ -1,7 +1,6 @@
-package com.hfad.playlistmaker
+package com.hfad.playlistmaker.features.search.data.dto
 
-
-data class Track (
+data class TrackDto(
     val trackId: String,
     val trackName: String,  // Название композиции
     val artistName: String, // Имя исполнителя
@@ -10,5 +9,6 @@ data class Track (
     val primaryGenreName: String, //Жанр трека
     val country: String, //Страна исполнителя
     val trackTimeMillis: String?, // Продолжительность трека
-    val previewUrl:String, //Превью трека
-    val artworkUrl100: String)// Ссылка на изображение обложки
+    val previewUrl: String, //Превью трека
+    val artworkUrl100: String // Ссылка на изображение обложки
+)
