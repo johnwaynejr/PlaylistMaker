@@ -3,10 +3,8 @@ package com.hfad.playlistmaker.util
 import android.content.Context
 import com.hfad.playlistmaker.features.player.presentation.PlayerPresenter
 import com.hfad.playlistmaker.features.player.presentation.PlayerView
-import com.hfad.playlistmaker.features.search.data.SearchHistoryStorage
 import com.hfad.playlistmaker.features.search.data.TrackRepositoryImpl
 import com.hfad.playlistmaker.features.search.data.network.RetrofitNetworkClient
-import com.hfad.playlistmaker.features.search.domain.TrackRecyclerAdapter
 import com.hfad.playlistmaker.features.search.domain.api.TrackInteractor
 import com.hfad.playlistmaker.features.search.domain.api.TrackRepository
 import com.hfad.playlistmaker.features.search.domain.impl.TrackInteractorImpl
@@ -26,11 +24,8 @@ object Creator {
 
     fun provideTrackSearchPresenter(
         searchView: SearchView,
-        context: Context,
-        historyAdapter: TrackRecyclerAdapter,
-        historyStorage: SearchHistoryStorage
-    ): TrackSearchPresenter {
-        return TrackSearchPresenter(searchView,context, historyAdapter, historyStorage)
+        context: Context): TrackSearchPresenter {
+        return TrackSearchPresenter(searchView,context)
     }
 
     fun providePlayerPresenter(playerView: PlayerView,

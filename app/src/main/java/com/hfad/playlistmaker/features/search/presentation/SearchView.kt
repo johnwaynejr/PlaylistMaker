@@ -1,36 +1,24 @@
 package com.hfad.playlistmaker.features.search.presentation
 
-import com.hfad.playlistmaker.features.search.domain.TrackRecyclerAdapter
 import com.hfad.playlistmaker.features.search.domain.models.Track
 
 interface SearchView {
 
-    fun showTrackList(isVisible: Boolean)
+    //Состояние «Загрузки»
+    fun showLoading()
 
-    fun showPlaceholderMessage(isVisible:Boolean)
+    // Состояние «Контента»
+    fun showContent(tracks: ArrayList<Track>)
 
-    fun setPlaceholderMessage(messageNum:Int)
+    // Состояние «Ошибки»
+    fun showError(imageNum: Int, messageNum: Int, btnStatus: Boolean)
 
-    fun showPlaceholderImage(isVisible:Boolean)
-
-    fun setPlaceholderImage(imageNum:Int)
-
-    fun showPlaceholderButton(isVisible:Boolean)
-
-    fun setTextPlaceholderButton(textNum:Int)
-
-    fun showHistoryTitle(isVisible:Boolean)
-
-    fun showProgressBar(isVisible:Boolean)
+    // Состояние «История»
+    fun showHistory(isVisible: Boolean)
 
     fun initAdapter()
 
-    fun initAdapter(adapter: TrackRecyclerAdapter)
-
     fun updateTrackList(newTrackList:List<Track>)
 
-    fun notifyAdapter()
-
-    fun hideKeyboard()
 
 }

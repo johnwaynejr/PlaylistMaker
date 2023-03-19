@@ -99,12 +99,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
 
         searchHistoryStorage = SearchHistoryStorage(sharedPrefs, recentTracksListKey)
 
-        trackSearchPresenter = Creator.provideTrackSearchPresenter(
-            this,
-            this,
-            historyAdapter,
-            searchHistoryStorage
-        )
+        trackSearchPresenter = Creator.provideTrackSearchPresenter(this,this)
 
         // Скрываем кнопки
         clearButton.visibility = View.GONE
@@ -118,7 +113,9 @@ class SearchActivity : AppCompatActivity(), SearchView {
 
         // Показываем историю
         if (searchHistoryStorage.recentTracksList.size > 0) {
-            trackSearchPresenter.showHistory()
+            trackList.adapter=historyAdapter
+            adapter.notifyDataSetChanged()
+            showHistory(true)
         }
 
 
@@ -133,13 +130,15 @@ class SearchActivity : AppCompatActivity(), SearchView {
             placeholderButton.visibility = View.GONE
             hideKeyboard()
             if (searchHistoryStorage.recentTracksList.size > 0) {
-                trackSearchPresenter.showHistory()
+                trackList.adapter=historyAdapter
+                adapter.notifyDataSetChanged()
+                showHistory(true)
             }
         }
         // Обрабатываем нажатие на кнопку обновить
         placeholderButton.setOnClickListener {
             if (placeholderButton.text == getString(R.string.btn_update)) trackSearchPresenter.searchQuery(inputEditText.text.toString())
-            if (placeholderButton.text == getString(R.string.btn_clear_history)) trackSearchPresenter.clearSearchingHistory()
+            if (placeholderButton.text == getString(R.string.btn_clear_history)) clearSearchingHistory()
         }
         // Инициализация TextWatcher
         simpleTextWatcher = object : TextWatcher {
@@ -205,51 +204,60 @@ class SearchActivity : AppCompatActivity(), SearchView {
         return current
     }
 
-    override fun showProgressBar(isVisible:Boolean) {
-       progressBar.visibility=if(isVisible) View.VISIBLE else View.GONE
+    override fun showLoading() {
+        progressBar.visibility=View.VISIBLE
+        historyTitle.visibility=View.GONE
+        placeholderButton.visibility=View.GONE
+        placeholderImage.visibility=View.GONE
+        placeholderMessage.visibility=View.GONE
+        hideKeyboard()
     }
 
-    override fun showTrackList(isVisible: Boolean) {
-        trackList.visibility=if(isVisible) View.VISIBLE else View.GONE
+    override fun showContent(tracks: ArrayList<Track>) {
+        trackList.visibility = View.VISIBLE
+        placeholderMessage.visibility = View.GONE
+        progressBar.visibility = View.GONE
+        adapter.trackList.clear()
+        adapter.trackList.addAll(tracks)
+        adapter.notifyDataSetChanged()
     }
 
-    override fun showPlaceholderMessage(isVisible: Boolean) {
-        placeholderMessage.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    override fun setPlaceholderMessage(messageNum: Int) {
+    override fun showError(imageNum: Int, messageNum: Int, btnStatus: Boolean) {
+        progressBar.visibility=View.GONE
+        placeholderImage.setImageResource(imageNum)
+        placeholderImage.visibility=View.VISIBLE
+        placeholderImage.setImageResource(imageNum)
         placeholderMessage.setText(messageNum)
+        placeholderMessage.visibility=View.VISIBLE
+        trackList.visibility=View.GONE
+        placeholderButton.visibility = if (btnStatus) View.VISIBLE else View.GONE
+        placeholderButton.setText(R.string.btn_update)
     }
 
-    override fun showPlaceholderImage(isVisible: Boolean) {
-        placeholderImage.visibility = if (isVisible) View.VISIBLE else View.GONE
+ override fun showHistory(isVisible: Boolean) {
+        if(isVisible){
+            historyTitle.visibility=View.VISIBLE
+            placeholderButton.visibility = View.VISIBLE
+            placeholderButton.setText(R.string.btn_clear_history)
+            trackList.visibility=View.VISIBLE
+        }else {
+            historyTitle.visibility=View.GONE
+            placeholderButton.visibility = View.GONE
+            trackList.visibility=View.GONE
+        }
     }
 
-    override fun setPlaceholderImage(imageNum: Int) {
-       placeholderImage.setImageResource(imageNum)
-    }
-
-    override fun showPlaceholderButton(isVisible: Boolean) {
-        placeholderButton.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    override fun setTextPlaceholderButton(textNum: Int) {
-        placeholderButton.setText(textNum)
-    }
-
-    override fun showHistoryTitle(isVisible: Boolean) {
-        historyTitle.visibility = if (isVisible) View.VISIBLE else View.GONE
+    fun clearSearchingHistory() {
+        showHistory(false)
+        searchHistoryStorage.clearStorage()
     }
 
     override fun initAdapter() {
         trackList.adapter=adapter
     }
 
-    override fun initAdapter(adapter: TrackRecyclerAdapter) {
-        trackList.adapter=adapter
-    }
     // Функция скрытия клавиатуры
-    override fun hideKeyboard() {
+    fun hideKeyboard() {
         currentFocus?.let { view ->
             val inputMethodManager =
                 getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -262,9 +270,6 @@ class SearchActivity : AppCompatActivity(), SearchView {
         adapter.trackList.addAll(newTrackList)
     }
 
-    override fun notifyAdapter() {
-        adapter.notifyDataSetChanged()
-    }
 }
 
 
