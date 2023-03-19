@@ -8,6 +8,7 @@ import com.hfad.playlistmaker.R
 import com.hfad.playlistmaker.util.Creator
 import com.hfad.playlistmaker.features.search.domain.api.TrackInteractor
 import com.hfad.playlistmaker.features.search.domain.models.Track
+import com.hfad.playlistmaker.features.search.ui.models.SearchState
 
 class TrackSearchPresenter(
     private val view: SearchView,
@@ -31,7 +32,7 @@ class TrackSearchPresenter(
 
         if (newSearchText.isNotEmpty()) {
             view.initAdapter()
-            view.showLoading()
+            view.render(SearchState.Loading)
             trackInteractor.search(newSearchText, object : TrackInteractor.TrackConsumer {
                  override fun consume(foundTracks: List<Track>?,errorMessage: String?) {
                         handler.post {
@@ -41,21 +42,27 @@ class TrackSearchPresenter(
                             }
                             when {
                                 errorMessage != null -> {
-                                    view.showError(
+                                    view.render(
+                                        SearchState.Error(
                                         R.drawable.finderror,
                                         R.string.something_went_wrong,
                                         true
+                                        )
                                     )
                                 }
                                 tracks.isEmpty() -> {
-                                    view.showError(
+                                    view.render(
+                                        SearchState.Error(
                                         R.drawable.findnothing,
                                         R.string.nothing_found,
                                         false
+                                        )
                                     )
                                 }
                                 else -> {
-                                    view.showContent(tracks)
+                                    view.render(
+                                        SearchState.Content(tracks)
+                                    )
                                 }
                             }
                         }

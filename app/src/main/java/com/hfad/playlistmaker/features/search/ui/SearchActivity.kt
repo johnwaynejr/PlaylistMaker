@@ -28,6 +28,7 @@ import com.hfad.playlistmaker.features.search.domain.TrackRecyclerAdapter
 import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.features.search.presentation.SearchView
 import com.hfad.playlistmaker.features.search.presentation.TrackSearchPresenter
+import com.hfad.playlistmaker.features.search.ui.models.SearchState
 
 
 class SearchActivity : AppCompatActivity(), SearchView {
@@ -118,9 +119,6 @@ class SearchActivity : AppCompatActivity(), SearchView {
             showHistory(true)
         }
 
-
-
-
         // Обрабатываем нажатие на кнопку очистки поля ввода
         clearButton.setOnClickListener {
             inputEditText.text.clear()
@@ -195,16 +193,16 @@ class SearchActivity : AppCompatActivity(), SearchView {
         trackSearchPresenter.onDestroy()
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+    override fun render(state: SearchState) {
+        when (state){
+            is SearchState.Loading -> showLoading()
+            is SearchState.Content -> showContent(state.tracks)
+            is SearchState.Error -> showError(state.imageNum,state.messageNum,state.btnStatus)
+            is SearchState.History -> showHistory(state.isVisible)
         }
-        return current
     }
 
-    override fun showLoading() {
+    fun showLoading() {
         progressBar.visibility=View.VISIBLE
         historyTitle.visibility=View.GONE
         placeholderButton.visibility=View.GONE
@@ -213,7 +211,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
         hideKeyboard()
     }
 
-    override fun showContent(tracks: ArrayList<Track>) {
+    fun showContent(tracks: ArrayList<Track>) {
         trackList.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
         progressBar.visibility = View.GONE
@@ -222,7 +220,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun showError(imageNum: Int, messageNum: Int, btnStatus: Boolean) {
+    fun showError(imageNum: Int, messageNum: Int, btnStatus: Boolean) {
         progressBar.visibility=View.GONE
         placeholderImage.setImageResource(imageNum)
         placeholderImage.visibility=View.VISIBLE
@@ -234,7 +232,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
         placeholderButton.setText(R.string.btn_update)
     }
 
- override fun showHistory(isVisible: Boolean) {
+    fun showHistory(isVisible: Boolean) {
         if(isVisible){
             historyTitle.visibility=View.VISIBLE
             placeholderButton.visibility = View.VISIBLE
@@ -268,6 +266,15 @@ class SearchActivity : AppCompatActivity(), SearchView {
     override fun updateTrackList(newTrackList: List<Track>) {
         adapter.trackList.clear()
         adapter.trackList.addAll(newTrackList)
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 
 }
