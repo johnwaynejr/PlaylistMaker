@@ -23,9 +23,8 @@ object Creator {
     }
 
     fun provideTrackSearchPresenter(
-        searchView: SearchView,
         context: Context): TrackSearchPresenter {
-        return TrackSearchPresenter(searchView,context)
+        return TrackSearchPresenter(context)
     }
 
     fun providePlayerPresenter(playerView: PlayerView,

@@ -11,12 +11,21 @@ import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.features.search.ui.models.SearchState
 
 class TrackSearchPresenter(
-    private val view: SearchView,
     private val context: Context) {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
+    }
+
+    private var view: SearchView? = null
+
+    fun attachView(view: SearchView) {
+        this.view = view
+    }
+
+    fun detachView() {
+        this.view = null
     }
 
     private val trackInteractor = Creator.provideTrackInteractor(context)
@@ -31,8 +40,8 @@ class TrackSearchPresenter(
     fun searchQuery(newSearchText: String) {
 
         if (newSearchText.isNotEmpty()) {
-            view.initAdapter()
-            view.render(SearchState.Loading)
+            view?.initAdapter()
+            view?.render(SearchState.Loading)
             trackInteractor.search(newSearchText, object : TrackInteractor.TrackConsumer {
                  override fun consume(foundTracks: List<Track>?,errorMessage: String?) {
                         handler.post {
@@ -42,7 +51,7 @@ class TrackSearchPresenter(
                             }
                             when {
                                 errorMessage != null -> {
-                                    view.render(
+                                    view?.render(
                                         SearchState.Error(
                                         R.drawable.finderror,
                                         R.string.something_went_wrong,
@@ -51,7 +60,7 @@ class TrackSearchPresenter(
                                     )
                                 }
                                 tracks.isEmpty() -> {
-                                    view.render(
+                                    view?.render(
                                         SearchState.Error(
                                         R.drawable.findnothing,
                                         R.string.nothing_found,
@@ -60,7 +69,7 @@ class TrackSearchPresenter(
                                     )
                                 }
                                 else -> {
-                                    view.render(
+                                    view?.render(
                                         SearchState.Content(tracks)
                                     )
                                 }

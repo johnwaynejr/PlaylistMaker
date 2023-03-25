@@ -48,7 +48,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
     private lateinit var simpleTextWatcher: TextWatcher
 
     private lateinit var searchHistoryStorage: SearchHistoryStorage
-    private lateinit var trackSearchPresenter: TrackSearchPresenter
+    private var trackSearchPresenter: TrackSearchPresenter?=null
 
     private var adapter = TrackRecyclerAdapter {
         if (clickDebounce()) {
@@ -78,6 +78,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
         val inputEditText = findViewById<EditText>(R.id.et_find)
         val strValET = inputEditText.text.toString()
         outState.putString(ET_VALUE, strValET)
+        trackSearchPresenter?.detachView()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +101,15 @@ class SearchActivity : AppCompatActivity(), SearchView {
 
         searchHistoryStorage = SearchHistoryStorage(sharedPrefs, recentTracksListKey)
 
-        trackSearchPresenter = Creator.provideTrackSearchPresenter(this,this)
+        trackSearchPresenter = (this.applicationContext as? TrackApplication)?.trackSearchPresenter
+
+        if (trackSearchPresenter == null) {
+            trackSearchPresenter = Creator.provideTrackSearchPresenter(
+                context = this.applicationContext,
+            )
+            (this.applicationContext as? TrackApplication)?.trackSearchPresenter = trackSearchPresenter
+        }
+        trackSearchPresenter?.attachView(this)
 
         // Скрываем кнопки
         clearButton.visibility = View.GONE
@@ -135,13 +144,12 @@ class SearchActivity : AppCompatActivity(), SearchView {
         }
         // Обрабатываем нажатие на кнопку обновить
         placeholderButton.setOnClickListener {
-            if (placeholderButton.text == getString(R.string.btn_update)) trackSearchPresenter.searchQuery(inputEditText.text.toString())
+            if (placeholderButton.text == getString(R.string.btn_update)) trackSearchPresenter?.searchQuery(inputEditText.text.toString())
             if (placeholderButton.text == getString(R.string.btn_clear_history)) clearSearchingHistory()
         }
         // Инициализация TextWatcher
         simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -150,16 +158,12 @@ class SearchActivity : AppCompatActivity(), SearchView {
                     clearButton.visibility = View.INVISIBLE
                 } else {
                     clearButton.visibility = View.VISIBLE
-                    trackSearchPresenter.searchDebounce(changedText = s?.toString() ?: "")
+                    trackSearchPresenter?.searchDebounce(changedText = s?.toString() ?: "")
                 }
-
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-                //empty
+            override fun afterTextChanged(s: Editable?) {
             }
         }
-
         //Добавляем созданный simpleTextWatcher к EditText
           simpleTextWatcher?.let{inputEditText.addTextChangedListener(it)}
 
@@ -173,7 +177,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
         //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА---------------------------
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                trackSearchPresenter.searchQuery(inputEditText.text.toString())
+                trackSearchPresenter?.searchQuery(inputEditText.text.toString())
             }
             false
         }
@@ -187,10 +191,35 @@ class SearchActivity : AppCompatActivity(), SearchView {
         inputEditText.setText(strValET)
     }
 
+    override fun onStart() {
+        super.onStart()
+        trackSearchPresenter?.attachView(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        trackSearchPresenter?.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackSearchPresenter?.detachView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        trackSearchPresenter?.detachView()
+    }
     override fun onDestroy() {
         super.onDestroy()
         simpleTextWatcher?.let{inputEditText.addTextChangedListener(it)}
-        trackSearchPresenter.onDestroy()
+        trackSearchPresenter?.detachView()
+        trackSearchPresenter?.onDestroy()
+
+        if (isFinishing()) {
+            // Очищаем ссылку на Presenter в Application
+            (this.application as? TrackApplication)?.trackSearchPresenter = null
+        }
     }
 
     override fun render(state: SearchState) {
