@@ -9,33 +9,24 @@ import com.hfad.playlistmaker.util.Creator
 import com.hfad.playlistmaker.features.search.domain.api.TrackInteractor
 import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.features.search.ui.models.SearchState
+import moxy.MvpPresenter
 
 class TrackSearchPresenter(
-    private val context: Context) {
+
+    private val context: Context): MvpPresenter<SearchView>() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
     }
 
-    private var view: SearchView? = null
-    private var state: SearchState? = null
     private var latestSearchText: String? = null
-
-    fun attachView(view: SearchView) {
-        this.view = view
-        state?.let { view.render(it) }
-    }
-
-    fun detachView() {
-        this.view = null
-    }
 
     private val trackInteractor = Creator.provideTrackInteractor(context)
     private val handler = Handler(Looper.getMainLooper())
     private val tracks = ArrayList<Track>()
 
-    fun onDestroy() {
+   override fun onDestroy() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
@@ -43,7 +34,7 @@ class TrackSearchPresenter(
     fun searchQuery(newSearchText: String) {
 
         if (newSearchText.isNotEmpty()) {
-            view?.initAdapter()
+
             renderState(SearchState.Loading)
 
             trackInteractor.search(newSearchText, object : TrackInteractor.TrackConsumer {
@@ -85,8 +76,7 @@ class TrackSearchPresenter(
     }
 
     private fun renderState(state: SearchState) {
-        this.state = state
-        this.view?.render(state)
+        viewState.render(state)
     }
 
     fun searchDebounce(changedText:String) {

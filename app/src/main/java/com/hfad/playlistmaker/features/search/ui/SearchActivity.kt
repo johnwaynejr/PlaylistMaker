@@ -1,6 +1,5 @@
 package com.hfad.playlistmaker.features.search.ui
 
-
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +15,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -29,9 +27,12 @@ import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.features.search.presentation.SearchView
 import com.hfad.playlistmaker.features.search.presentation.TrackSearchPresenter
 import com.hfad.playlistmaker.features.search.ui.models.SearchState
+import moxy.MvpActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
 
-class SearchActivity : AppCompatActivity(), SearchView {
+class SearchActivity : MvpActivity(), SearchView {
 
     companion object {
         private const val ET_VALUE = "ET_VALUE"
@@ -48,7 +49,18 @@ class SearchActivity : AppCompatActivity(), SearchView {
     private lateinit var simpleTextWatcher: TextWatcher
 
     private lateinit var searchHistoryStorage: SearchHistoryStorage
-    private var trackSearchPresenter: TrackSearchPresenter?=null
+
+    @InjectPresenter
+    lateinit var trackSearchPresenter: TrackSearchPresenter
+
+    @ProvidePresenter
+    fun providePresenter(): TrackSearchPresenter {
+        return Creator.provideTrackSearchPresenter(
+            context = this.applicationContext,
+        )
+    }
+
+
 
     private var adapter = TrackRecyclerAdapter {
         if (clickDebounce()) {
@@ -78,7 +90,6 @@ class SearchActivity : AppCompatActivity(), SearchView {
         val inputEditText = findViewById<EditText>(R.id.et_find)
         val strValET = inputEditText.text.toString()
         outState.putString(ET_VALUE, strValET)
-        trackSearchPresenter?.detachView()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,17 +110,9 @@ class SearchActivity : AppCompatActivity(), SearchView {
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.GONE
 
+        trackList.adapter=adapter
+
         searchHistoryStorage = SearchHistoryStorage(sharedPrefs, recentTracksListKey)
-
-        trackSearchPresenter = (this.applicationContext as? TrackApplication)?.trackSearchPresenter
-
-        if (trackSearchPresenter == null) {
-            trackSearchPresenter = Creator.provideTrackSearchPresenter(
-                context = this.applicationContext,
-            )
-            (this.applicationContext as? TrackApplication)?.trackSearchPresenter = trackSearchPresenter
-        }
-        trackSearchPresenter?.attachView(this)
 
         // Скрываем кнопки
         clearButton.visibility = View.GONE
@@ -144,7 +147,10 @@ class SearchActivity : AppCompatActivity(), SearchView {
         }
         // Обрабатываем нажатие на кнопку обновить
         placeholderButton.setOnClickListener {
-            if (placeholderButton.text == getString(R.string.btn_update)) trackSearchPresenter?.searchQuery(inputEditText.text.toString())
+            if (placeholderButton.text == getString(R.string.btn_update)) {
+                trackList.adapter=adapter
+                trackSearchPresenter?.searchQuery(inputEditText.text.toString())
+            }
             if (placeholderButton.text == getString(R.string.btn_clear_history)) clearSearchingHistory()
         }
         // Инициализация TextWatcher
@@ -158,6 +164,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
                     clearButton.visibility = View.INVISIBLE
                 } else {
                     clearButton.visibility = View.VISIBLE
+                    trackList.adapter=adapter
                     trackSearchPresenter?.searchDebounce(changedText = s?.toString() ?: "")
                 }
             }
@@ -191,36 +198,12 @@ class SearchActivity : AppCompatActivity(), SearchView {
         inputEditText.setText(strValET)
     }
 
-    override fun onStart() {
-        super.onStart()
-        trackSearchPresenter?.attachView(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        trackSearchPresenter?.attachView(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        trackSearchPresenter?.detachView()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        trackSearchPresenter?.detachView()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         simpleTextWatcher?.let{inputEditText.addTextChangedListener(it)}
-        trackSearchPresenter?.detachView()
         trackSearchPresenter?.onDestroy()
 
-        if (isFinishing()) {
-            // Очищаем ссылку на Presenter в Application
-            (this.application as? TrackApplication)?.trackSearchPresenter = null
-        }
     }
 
     override fun render(state: SearchState) {
@@ -280,10 +263,6 @@ class SearchActivity : AppCompatActivity(), SearchView {
         searchHistoryStorage.clearStorage()
     }
 
-    override fun initAdapter() {
-        trackList.adapter=adapter
-    }
-
     // Функция скрытия клавиатуры
     fun hideKeyboard() {
         currentFocus?.let { view ->
@@ -291,11 +270,6 @@ class SearchActivity : AppCompatActivity(), SearchView {
                 getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         }
-    }
-
-    override fun updateTrackList(newTrackList: List<Track>) {
-        adapter.trackList.clear()
-        adapter.trackList.addAll(newTrackList)
     }
 
     private fun clickDebounce(): Boolean {

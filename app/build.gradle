@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    //id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -34,6 +34,11 @@ android {
 }
 
 dependencies {
+
+    def moxyVersion = '2.2.2'
+    implementation "com.github.moxy-community:moxy:$moxyVersion"
+    implementation "com.github.moxy-community:moxy-android:$moxyVersion"
+    kapt "com.github.moxy-community:moxy-compiler:$moxyVersion"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
