@@ -210,6 +210,7 @@ class SearchActivity : AppCompatActivity(), SearchView {
         super.onStop()
         trackSearchPresenter?.detachView()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         simpleTextWatcher?.let{inputEditText.addTextChangedListener(it)}

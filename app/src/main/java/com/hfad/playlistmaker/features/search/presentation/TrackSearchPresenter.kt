@@ -19,9 +19,12 @@ class TrackSearchPresenter(
     }
 
     private var view: SearchView? = null
+    private var state: SearchState? = null
+    private var latestSearchText: String? = null
 
     fun attachView(view: SearchView) {
         this.view = view
+        state?.let { view.render(it) }
     }
 
     fun detachView() {
@@ -41,7 +44,8 @@ class TrackSearchPresenter(
 
         if (newSearchText.isNotEmpty()) {
             view?.initAdapter()
-            view?.render(SearchState.Loading)
+            renderState(SearchState.Loading)
+
             trackInteractor.search(newSearchText, object : TrackInteractor.TrackConsumer {
                  override fun consume(foundTracks: List<Track>?,errorMessage: String?) {
                         handler.post {
@@ -51,7 +55,7 @@ class TrackSearchPresenter(
                             }
                             when {
                                 errorMessage != null -> {
-                                    view?.render(
+                                    renderState(
                                         SearchState.Error(
                                         R.drawable.finderror,
                                         R.string.something_went_wrong,
@@ -60,7 +64,7 @@ class TrackSearchPresenter(
                                     )
                                 }
                                 tracks.isEmpty() -> {
-                                    view?.render(
+                                    renderState(
                                         SearchState.Error(
                                         R.drawable.findnothing,
                                         R.string.nothing_found,
@@ -69,7 +73,7 @@ class TrackSearchPresenter(
                                     )
                                 }
                                 else -> {
-                                    view?.render(
+                                   renderState(
                                         SearchState.Content(tracks)
                                     )
                                 }
@@ -80,7 +84,18 @@ class TrackSearchPresenter(
         }
     }
 
+    private fun renderState(state: SearchState) {
+        this.state = state
+        this.view?.render(state)
+    }
+
     fun searchDebounce(changedText:String) {
+
+        if (latestSearchText == changedText) {
+            return
+        }
+
+        this.latestSearchText = changedText
 
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
