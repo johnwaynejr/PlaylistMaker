@@ -232,7 +232,7 @@ class SearchActivity : MvpActivity(), SearchView {
         adapter.trackList.addAll(tracks)
         adapter.notifyDataSetChanged()
     }
-
+//
     fun showError(imageNum: Int, messageNum: Int, btnStatus: Boolean) {
         progressBar.visibility=View.GONE
         placeholderImage.setImageResource(imageNum)
