@@ -9,8 +9,6 @@ import com.hfad.playlistmaker.features.search.domain.api.TrackInteractor
 import com.hfad.playlistmaker.features.search.domain.api.TrackRepository
 import com.hfad.playlistmaker.features.search.domain.impl.TrackInteractorImpl
 import com.hfad.playlistmaker.features.search.domain.models.Track
-import com.hfad.playlistmaker.features.search.presentation.SearchView
-import com.hfad.playlistmaker.features.search.presentation.TrackSearchPresenter
 
 object Creator {
 
@@ -22,10 +20,10 @@ object Creator {
         return TrackInteractorImpl(getTrackRepository(context))
     }
 
-    fun provideTrackSearchPresenter(
-        context: Context): TrackSearchPresenter {
-        return TrackSearchPresenter(context)
-    }
+    /*fun provideTrackSearchPresenter(
+        context: Context): TrackSearchViewModel {
+        return TrackSearchViewModel(context)
+    }*/
 
     fun providePlayerPresenter(playerView: PlayerView,
                                currentTrack: Track): PlayerPresenter {

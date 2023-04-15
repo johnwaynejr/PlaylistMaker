@@ -15,52 +15,26 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.hfad.playlistmaker.R
-import com.hfad.playlistmaker.util.Creator
 import com.hfad.playlistmaker.features.player.ui.PlayerActivity
 import com.hfad.playlistmaker.features.search.data.SearchHistoryStorage
 import com.hfad.playlistmaker.features.search.domain.TrackRecyclerAdapter
 import com.hfad.playlistmaker.features.search.domain.models.Track
-import com.hfad.playlistmaker.features.search.presentation.SearchView
-import com.hfad.playlistmaker.features.search.presentation.TrackSearchPresenter
+import com.hfad.playlistmaker.features.search.presentation.TrackSearchViewModel
 import com.hfad.playlistmaker.features.search.ui.models.SearchState
-import moxy.MvpActivity
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 
 
-class SearchActivity : MvpActivity(), SearchView {
+class SearchActivity : ComponentActivity() {
 
     companion object {
         private const val ET_VALUE = "ET_VALUE"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
-
-    lateinit var trackList: RecyclerView
-    private lateinit var inputEditText: EditText
-    private lateinit var placeholderMessage: TextView
-    private lateinit var placeholderImage: ImageView
-    private lateinit var placeholderButton: Button
-    private lateinit var historyTitle: TextView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var simpleTextWatcher: TextWatcher
-
-    private lateinit var searchHistoryStorage: SearchHistoryStorage
-
-    @InjectPresenter
-    lateinit var trackSearchPresenter: TrackSearchPresenter
-
-    @ProvidePresenter
-    fun providePresenter(): TrackSearchPresenter {
-        return Creator.provideTrackSearchPresenter(
-            context = this.applicationContext,
-        )
-    }
-
-
 
     private var adapter = TrackRecyclerAdapter {
         if (clickDebounce()) {
@@ -82,8 +56,22 @@ class SearchActivity : MvpActivity(), SearchView {
         }
     }
 
+    lateinit var trackList: RecyclerView
+    private lateinit var inputEditText: EditText
+    private lateinit var placeholderMessage: TextView
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderButton: Button
+    private lateinit var historyTitle: TextView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var simpleTextWatcher: TextWatcher
+    private lateinit var searchHistoryStorage: SearchHistoryStorage
+
+
     private var isClickAllowed = true
+
     private val handler = Handler(Looper.getMainLooper())
+
+    private lateinit var viewModel: TrackSearchViewModel
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -95,6 +83,8 @@ class SearchActivity : MvpActivity(), SearchView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        viewModel = ViewModelProvider(this, TrackSearchViewModel.getViewModelFactory())[TrackSearchViewModel::class.java]
 
         val fileName = getString(R.string.app_preference_file_name)
         val recentTracksListKey = getString(R.string.recent_tracks_list_key)
@@ -149,7 +139,7 @@ class SearchActivity : MvpActivity(), SearchView {
         placeholderButton.setOnClickListener {
             if (placeholderButton.text == getString(R.string.btn_update)) {
                 trackList.adapter=adapter
-                trackSearchPresenter?.searchQuery(inputEditText.text.toString())
+                viewModel?.searchQuery(inputEditText.text.toString())
             }
             if (placeholderButton.text == getString(R.string.btn_clear_history)) clearSearchingHistory()
         }
@@ -165,7 +155,7 @@ class SearchActivity : MvpActivity(), SearchView {
                 } else {
                     clearButton.visibility = View.VISIBLE
                     trackList.adapter=adapter
-                    trackSearchPresenter?.searchDebounce(changedText = s?.toString() ?: "")
+                    viewModel?.searchDebounce(changedText = s?.toString() ?: "")
                 }
             }
             override fun afterTextChanged(s: Editable?) {
@@ -173,6 +163,11 @@ class SearchActivity : MvpActivity(), SearchView {
         }
         //Добавляем созданный simpleTextWatcher к EditText
           simpleTextWatcher?.let{inputEditText.addTextChangedListener(it)}
+
+        //Прописываем подписку на LiveData
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
 
         //Обрабатываем нажатие на кнопку "Назад"
         btnBack.setOnClickListener {
@@ -184,7 +179,7 @@ class SearchActivity : MvpActivity(), SearchView {
         //-----ОБРАБОТКА ПОИСКОВОГО ЗАПРОСА---------------------------
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                trackSearchPresenter?.searchQuery(inputEditText.text.toString())
+                viewModel?.searchQuery(inputEditText.text.toString())
             }
             false
         }
@@ -202,11 +197,9 @@ class SearchActivity : MvpActivity(), SearchView {
     override fun onDestroy() {
         super.onDestroy()
         simpleTextWatcher?.let{inputEditText.addTextChangedListener(it)}
-        trackSearchPresenter?.onDestroy()
-
     }
 
-    override fun render(state: SearchState) {
+    fun render(state: SearchState) {
         when (state){
             is SearchState.Loading -> showLoading()
             is SearchState.Content -> showContent(state.tracks)
@@ -232,7 +225,7 @@ class SearchActivity : MvpActivity(), SearchView {
         adapter.trackList.addAll(tracks)
         adapter.notifyDataSetChanged()
     }
-//
+
     fun showError(imageNum: Int, messageNum: Int, btnStatus: Boolean) {
         progressBar.visibility=View.GONE
         placeholderImage.setImageResource(imageNum)
