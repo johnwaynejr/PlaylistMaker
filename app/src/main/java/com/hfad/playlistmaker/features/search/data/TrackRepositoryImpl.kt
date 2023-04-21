@@ -6,7 +6,7 @@ import com.hfad.playlistmaker.features.search.domain.api.TrackRepository
 import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.util.Resource
 
-class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
+class TrackRepositoryImpl(private val networkClient: NetworkClient,private val localStorage: LocalStorage) : TrackRepository {
 
     override fun search(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
@@ -15,6 +15,8 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 Resource.Error("Проверьте подключение к интернету")
             }
             200 -> {
+                val stored = localStorage.getSavedFavorites()
+
                 Resource.Success((response as TrackSearchResponse).results.map {
                     Track(
                         it.trackId,
@@ -26,7 +28,8 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                         it.country,
                         it.trackTimeMillis,
                         it.previewUrl,
-                        it.artworkUrl100
+                        it.artworkUrl100,
+                        stored.contains(it.trackId)
                     )
                 })
             }
@@ -34,5 +37,13 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 Resource.Error("Ошибка сервера")
             }
         }
+    }
+
+    override fun addTrackToFavorites(track: Track) {
+        localStorage.addToFavorites(track.trackId)
+    }
+
+    override fun removeTrackFromFavorites(track: Track) {
+        localStorage.removeFromFavorites(track.trackId)
     }
 }

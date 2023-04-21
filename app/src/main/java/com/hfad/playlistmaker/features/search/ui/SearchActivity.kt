@@ -37,23 +37,30 @@ class SearchActivity : ComponentActivity() {
     }
 
     private var adapter = TrackRecyclerAdapter {
-        if (clickDebounce()) {
-            searchHistoryStorage.addTrackToStorage(it)
-            searchHistoryStorage.saveToFile()
-            val intent = Intent(this, PlayerActivity::class.java)
-            val json = Gson().toJson(it)
-            intent.putExtra(R.string.track_intent_key.toString(), json)
-            startActivity(intent)
+        object : TrackRecyclerAdapter.TrackClickListener {
+            override fun onTrackClick(track: Track) {
+                if (clickDebounce()) {
+                    searchHistoryStorage.addTrackToStorage(this@SearchActivity)
+                    searchHistoryStorage.saveToFile()
+                    val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                    val json = Gson().toJson(this@SearchActivity)
+                    intent.putExtra(R.string.track_intent_key.toString(), json)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
     private var historyAdapter = TrackRecyclerAdapter {
         if (clickDebounce()) {
-            val intent = Intent(this, PlayerActivity::class.java)
-            val json = Gson().toJson(it)
+            val json = Gson().toJson(this@SearchActivity)
             intent.putExtra(R.string.track_intent_key.toString(), json)
             startActivity(intent)
         }
+    }
+    override fun onFavoriteToggleClick(track: Track) {
+        // 1
+        viewModel.toggleFavorite(track)
     }
 
     lateinit var trackList: RecyclerView

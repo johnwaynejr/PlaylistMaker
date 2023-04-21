@@ -3,6 +3,7 @@ package com.hfad.playlistmaker.util
 import android.content.Context
 import com.hfad.playlistmaker.features.player.presentation.PlayerPresenter
 import com.hfad.playlistmaker.features.player.presentation.PlayerView
+import com.hfad.playlistmaker.features.search.data.LocalStorage
 import com.hfad.playlistmaker.features.search.data.TrackRepositoryImpl
 import com.hfad.playlistmaker.features.search.data.network.RetrofitNetworkClient
 import com.hfad.playlistmaker.features.search.domain.api.TrackInteractor
@@ -13,7 +14,9 @@ import com.hfad.playlistmaker.features.search.domain.models.Track
 object Creator {
 
     private fun getTrackRepository(context: Context): TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient(context))
+        return TrackRepositoryImpl(RetrofitNetworkClient(context),
+        LocalStorage(context.getSharedPreferences("local_storage",Context.MODE_PRIVATE))
+        )
     }
 
     fun provideTrackInteractor(context: Context): TrackInteractor {

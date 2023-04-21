@@ -2,6 +2,7 @@ package com.hfad.playlistmaker.features.search.domain.impl
 
 import com.hfad.playlistmaker.features.search.domain.api.TrackInteractor
 import com.hfad.playlistmaker.features.search.domain.api.TrackRepository
+import com.hfad.playlistmaker.features.search.domain.models.Track
 import com.hfad.playlistmaker.util.Resource
 import java.util.concurrent.Executors
 
@@ -21,4 +22,14 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
         }
       }
     }
+
+    override fun addTrackToFavorites(track: Track) {
+        repository.addTrackToFavorites(track)
+    }
+
+    override fun removeTrackToFavorites(track: Track) {
+        repository.removeTrackFromFavorites(track)
+    }
+
+
 }

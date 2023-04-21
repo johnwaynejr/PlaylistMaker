@@ -5,4 +5,6 @@ import com.hfad.playlistmaker.util.Resource
 
 interface TrackRepository {
     fun search(expression: String): Resource<List<Track>>
+    fun addTrackToFavorites(track: Track)
+    fun removeTrackFromFavorites(track: Track)
 }

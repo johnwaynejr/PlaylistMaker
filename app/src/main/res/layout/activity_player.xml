@@ -71,7 +71,7 @@
         android:layout_marginEnd="@dimen/twenty_four"
         android:background="@null"
         android:contentDescription="@string/as_header_text"
-        android:src="@drawable/btn_add_to_favorites"
+        android:src="@drawable/inactive_favorite"
         app:layout_constraintBottom_toBottomOf="@+id/playerPlayBtn"
         app:layout_constraintTop_toTopOf="@+id/playerPlayBtn"
         app:layout_constraintEnd_toEndOf="parent" />
