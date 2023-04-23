@@ -12,6 +12,7 @@
     <color name="gray_light">#E6E8EB</color>
 
     <color name="tint_if_theme">#FF000000</color>
+    <color name="white_or_black">#FFFFFFFF</color>
 
     <color name="fill_color">#FFFFFF</color>
     <color name="theme_hard_text_color">#1A1B22</color>

@@ -1,3 +1,3 @@
 package com.hfad.playlistmaker.features.search.data.dto
 
-class TrackSearchResponse(val results: List<TrackDto>):Response()
+class TrackSearchResponse(val results: List<TrackDto>) : Response()

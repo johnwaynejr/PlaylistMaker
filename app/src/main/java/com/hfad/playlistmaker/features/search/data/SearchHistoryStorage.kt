@@ -8,11 +8,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
+class SearchHistoryStorage(fileShared: SharedPreferences, keyShared: String) : Observer {
 
-class SearchHistoryStorage(fileShared:SharedPreferences,keyShared:String) : Observer {
-
-    private  var file =fileShared
-    private  var key =keyShared
+    private var file = fileShared
+    private var key = keyShared
     var recentTracksList = ArrayList<Track>()
 
     override fun addTrackToStorage(track: Track) {
@@ -29,7 +28,7 @@ class SearchHistoryStorage(fileShared:SharedPreferences,keyShared:String) : Obse
         }
     }
 
- fun clearStorage() {
+    fun clearStorage() {
         recentTracksList.clear()
         saveToFile()
     }

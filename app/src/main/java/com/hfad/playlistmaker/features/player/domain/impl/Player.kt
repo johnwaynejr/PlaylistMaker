@@ -2,15 +2,12 @@ package com.hfad.playlistmaker.features.player.domain.impl
 
 import android.media.MediaPlayer
 import android.os.Handler
-import android.widget.ImageButton
-import android.widget.TextView
-import com.hfad.playlistmaker.R
+import com.hfad.playlistmaker.features.player.presentation.PlayerView
 
 
 class Player(
     val mediaPlayer: MediaPlayer,
-    val play: ImageButton,
-    val timeElapsed: TextView,
+    val playerView: PlayerView,
     val url: String,
     val handler: Handler
 ) {
@@ -29,26 +26,26 @@ class Player(
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            play.isEnabled = true
+            playerView.enablePlayButton(true)
             playerState = STATE_PREPARED
         }
 
         mediaPlayer.setOnCompletionListener {
-            play.setImageResource(R.drawable.btn_play)
+            playerView.setPlayButton(true)
             playerState = STATE_PREPARED
-            timeElapsed.text = "00:00"
+            playerView.setTimeElapse("00:00")
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
-        play.setImageResource(R.drawable.btn_pause)
+        playerView.setPlayButton(false)
         playerState = STATE_PLAYING
     }
 
     fun pausePlayer() {
         mediaPlayer.pause()
-        play.setImageResource(R.drawable.btn_play)
+        playerView.setPlayButton(true)
         playerState = STATE_PAUSED
         handler.removeCallbacks({ playerState == STATE_PAUSED })
     }

@@ -9,24 +9,25 @@ import com.hfad.playlistmaker.features.search.domain.api.Observable
 import com.hfad.playlistmaker.features.search.domain.api.Observer
 
 
-class TrackRecyclerAdapter(val clickListener: TrackClickListener) :
+class TrackRecyclerAdapter(private val clickListener: TrackClickListener) :
     RecyclerView.Adapter<TrackViewHolder>(),
     Observable {
 
     var trackList = ArrayList<Track>()
+
     private lateinit var searchHistory: Observer
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.track_list_layout, parent, false)
-        return TrackViewHolder(itemView)
+        return TrackViewHolder(itemView,clickListener)
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
-        holder.itemView.setOnClickListener {
-           clickListener.onTrackClick(trackList.get(position))
-        }
+        /*holder.itemView.setOnClickListener {
+            clickListener.onTrackClick(trackList.get(position))
+        }*/
     }
 
     override fun getItemCount() = trackList.size
@@ -35,8 +36,9 @@ class TrackRecyclerAdapter(val clickListener: TrackClickListener) :
         searchHistory = observer
     }
 
-    fun interface TrackClickListener {
+  interface TrackClickListener {
         fun onTrackClick(track: Track)
+        fun onFavoriteToggleClick(track: Track)
     }
 
 }
