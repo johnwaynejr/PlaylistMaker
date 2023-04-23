@@ -36,11 +36,11 @@ class SearchActivity : ComponentActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var adapter = TrackRecyclerAdapter {
+    private var adapter = TrackRecyclerAdapter (
         object : TrackRecyclerAdapter.TrackClickListener {
             override fun onTrackClick(track: Track) {
                 if (clickDebounce()) {
-                    searchHistoryStorage.addTrackToStorage(this@SearchActivity)
+                    searchHistoryStorage.addTrackToStorage(track)
                     searchHistoryStorage.saveToFile()
                     val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
                     val json = Gson().toJson(this@SearchActivity)
@@ -48,20 +48,33 @@ class SearchActivity : ComponentActivity() {
                     startActivity(intent)
                 }
             }
-        }
-    }
 
-    private var historyAdapter = TrackRecyclerAdapter {
-        if (clickDebounce()) {
-            val json = Gson().toJson(this@SearchActivity)
-            intent.putExtra(R.string.track_intent_key.toString(), json)
-            startActivity(intent)
+            override fun onFavoriteToggleClick(track: Track) {
+                // 1
+                viewModel.toggleFavorite(track)
+            }
         }
-    }
-    override fun onFavoriteToggleClick(track: Track) {
-        // 1
-        viewModel.toggleFavorite(track)
-    }
+    )
+
+    private var historyAdapter = TrackRecyclerAdapter (
+        object : TrackRecyclerAdapter.TrackClickListener {
+            override fun onTrackClick(track: Track) {
+                if (clickDebounce()) {
+                    val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                    val json = Gson().toJson(this@SearchActivity)
+                    intent.putExtra(R.string.track_intent_key.toString(), json)
+                    startActivity(intent)
+                }
+            }
+
+            override fun onFavoriteToggleClick(track: Track) {
+                // 1
+                viewModel.toggleFavorite(track)
+            }
+        }
+    )
+
+
 
     lateinit var trackList: RecyclerView
     private lateinit var inputEditText: EditText
